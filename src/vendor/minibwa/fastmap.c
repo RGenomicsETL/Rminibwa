@@ -5,7 +5,7 @@
 #include "kommon.h"
 #include "kseq.h"
 #include "kalloc.h"
-KSEQ_INIT(gzFile, gzread);
+KSEQ_INIT(gzFile, gzread)
 
 typedef struct {
 	char *name;

@@ -1,5 +1,9 @@
+#ifndef _DEFAULT_SOURCE
 #define _DEFAULT_SOURCE // expose MADV_RANDOM etc. under -std=c99 (glibc >= 2.19)
+#endif
+#ifndef _BSD_SOURCE
 #define _BSD_SOURCE     // ditto on older glibc (e.g. CentOS 7 / glibc 2.17)
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>

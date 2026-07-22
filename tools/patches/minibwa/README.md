@@ -41,3 +41,7 @@ small and source-compatible with that exact commit. When bumping upstream:
 - `0008-add-windows-file-mapping.patch`: implement the `kom_mmap_file()` and
   `kom_munmap()` portability layer with Win32 file mappings on Windows/Rtools,
   while preserving the upstream POSIX `mmap()` implementation elsewhere.
+- `0009-fix-strict-c-diagnostics.patch`: guard feature-test macro definitions,
+  use typed byte-pointer arithmetic in `read_huge()`, and remove a stray
+  file-scope semicolon so package and Rtools builds remain clean under strict
+  warnings.

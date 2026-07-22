@@ -594,7 +594,7 @@ static uint64_t read_huge(FILE *fp, uint64_t size, void *a)
 	uint64_t offset = 0;
 	while (size) {
 		int x = bufsize < size? bufsize : size;
-		if ((x = fread(a + offset, 1, x, fp)) == 0) break;
+		if ((x = fread((uint8_t*)a + offset, 1, x, fp)) == 0) break;
 		size -= x; offset += x;
 	}
 	return offset;
