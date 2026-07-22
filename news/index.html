@@ -41,7 +41,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0-0.0.1.9000" id="rminibwa-040-0019000">Rminibwa 0.4.0-0.0.1.9000<a class="anchor" aria-label="anchor" href="#rminibwa-040-0019000"></a></h2>
-<ul><li>Add a versioned, lossless native FASTQ query-group stream for downstream BAM/CRAM producers. The installed C API exposes bounded one-template views, typed CIGAR/tag data, header facts, cooperative cancellation, explicit ownership/lifetime rules, exact read-group preservation, and reason-coded paired FASTQ validation without a SAM-text or per-record-R-callback path.</li>
+<ul><li>Add a Win32 file-mapping implementation for vendored <code>minibwa</code> so Windows and Rtools builds no longer require the unavailable POSIX <code>sys/mman.h</code>.</li>
+<li>Add a versioned, lossless native FASTQ query-group stream for downstream BAM/CRAM producers. The installed C API exposes bounded one-template views, typed CIGAR/tag data, header facts, cooperative cancellation, explicit ownership/lifetime rules, exact read-group preservation, and reason-coded paired FASTQ validation without a SAM-text or per-record-R-callback path.</li>
 <li>Update vendored <code>minibwa</code> to exact upstream commit <code>84019dc454013134570479c50355741ed8318a8e</code> (<code>MB_VERSION</code> <code>0.4-r411-dirty</code>; archive SHA256 <code>fe7e5a14bf26882b3f77804bec210c3b0fa3e073555664da1ce6f53aef80565c</code>).</li>
 </ul></div>
     <div class="section level2">
