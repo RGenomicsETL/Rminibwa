@@ -1,6 +1,6 @@
 expect_true(file.exists(minibwa_path()))
 expect_true(minibwa_available())
-expect_match(minibwa_version(), "^0\\.3")
+expect_equal(minibwa_version(), "0.4-r411-dirty")
 expect_false(minibwa_available(path = "definitely-not-a-minibwa-binary"))
 expect_equal(minibwa_path("definitely-not-a-minibwa-binary", must_work = FALSE), NA_character_)
 expect_error(

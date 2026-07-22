@@ -1,3 +1,15 @@
+# Rminibwa 0.4.0-0.0.1.9000
+
+- Add a versioned, lossless native FASTQ query-group stream for downstream
+  BAM/CRAM producers. The installed C API exposes bounded one-template views,
+  typed CIGAR/tag data, header facts, cooperative cancellation, explicit
+  ownership/lifetime rules, exact read-group preservation, and reason-coded
+  paired FASTQ validation without a SAM-text or per-record-R-callback path.
+- Update vendored `minibwa` to exact upstream commit
+  `84019dc454013134570479c50355741ed8318a8e` (`MB_VERSION`
+  `0.4-r411-dirty`; archive SHA256
+  `fe7e5a14bf26882b3f77804bec210c3b0fa3e073555664da1ce6f53aef80565c`).
+
 # Rminibwa 0.3.0-0.0.1.9000
 
 - Add a MinGW/Rtools-only `kthread.c` dead-return guard after `pthread_exit()`

@@ -113,9 +113,65 @@ SEXP summarize_alignment(SEXP x)
 }
 ```
 
-A complete in-process consumer compiled with Rtinycc is in
+A complete in-process batch consumer compiled with Rtinycc is in
 `vignettes/downstream-c-api.Rmd` and
 `inst/capi/rminibwa_tinycc_consumer.c`.
+
+## Query-group BAM producer path
+
+`mb_query_stream()` is the producer interface for a native BAM/CRAM
+finalizer. It maps exactly one complete normalized QNAME group at a
+time, so a consumer can make its duplicate decision while both mates and
+every primary, secondary, supplementary, or unmapped record are still
+together. The R helpers below are diagnostics only; a production
+consumer calls the installed C API and never materializes these records
+in R or as SAM text.
+
+``` r
+fq <- file.path(td, "query-groups.fq")
+stream_reads <- reads[1:2]
+writeLines(
+  as.vector(rbind(c("@template-1", "@template-2"), stream_reads, "+", strrep("I", nchar(stream_reads)))),
+  fq,
+  useBytes = TRUE
+)
+
+stream <- mb_query_stream(
+  fq, idx, mb_opts("sr", out_n = 0L),
+  mode = "single", threads = 1L,
+  read_group = "@RG\tID:rg1\tSM:example\tLB:example-library",
+  max_seen_qnames = 10L
+)
+group <- mb_query_stream_next(stream)
+group
+#> <rminibwa query group>
+#>   qname: template-1
+#>   reads: 1
+#>   records: 51
+mb_query_stream_cancel(stream)
+```
+
+The C consumer checks `RMINIBWA_STREAM_ABI_VERSION`, obtains a
+`Rminibwa_header_view` once, and then calls `Rminibwa_stream_next()`
+followed by `Rminibwa_query_group_view()` for each group. The view
+supplies original sequence/quality bytes, full BAM-packed CIGARs
+including clips, SAM flags, mate fields, typed AS/NM/MQ/MC/RG tags,
+input order, and exact `@SQ`, `@RG`, `@PG`, `SO:unsorted`, and
+`GO:query` facts. Its pointers are borrowed until the next call, which
+provides one-group back-pressure and bounded alignment memory.
+
+Rminibwa intentionally has **no** hard `Rduckhts` or htslib dependency:
+this keeps the aligner producer portable and prevents two htslib
+contracts from being loaded into it. The DuckHTS/Rduckhts finalizer is
+the downstream consumer and should require `Rduckhts (>= 1.5.0-0.1.0)`,
+use its installed `rduckhts_htslib_config()` receipt at configure time,
+and link only against that receipt. This POD boundary lets the DuckHTS
+adapter encode each record once with its own htslib instead of passing
+`bam1_t` across package boundaries.
+
+A complete stream C-API smoke consumer is in
+`inst/capi/rminibwa_tinycc_stream_consumer.c`; the full lifetime and
+cancellation contract is documented in `vignettes/downstream-c-api.Rmd`.
 
 ## SIMD dispatch
 

@@ -1,4 +1,4 @@
-.TH minibwa 1 "28 June 2026" "minibwa-0.3 (r391)" "Bioinformatics tools"
+.TH minibwa 1 "20 July 2026" "minibwa-0.4 (r411-dirty)" "Bioinformatics tools"
 .SH NAME
 .PP
 minibwa - short/long-read alignment against a reference genome
@@ -288,6 +288,14 @@ or
 presets. Disabled with the
 .B lr
 preset.
+.TP
+.B -I \fIINT1\fR[,\fIINT2\fR[,\fIINT3\fR[,\fIINT4\fR]]]
+Mean, standard deviation, max and min of the expected insert size distribution [inferred].
+If missing,
+.IR INT2 =round( INT1 /10),
+.IR INT3 = INT1 + INT2 *4,
+and
+.IR INT4 =min( INT1 - INT2 *4,1).
 
 .SS Input/Output Options
 .TP 10
@@ -306,6 +314,11 @@ secondary alignments [0]. Primary and supplementary alignments are always output
 If there are
 .RI >= NUM
 secondary hits of score above 80% of the best hit, output all of them to the XA tag [5]
+.TP
+.BR --xa-ratio = \fIFLOAT
+A secondary hit is considered in the XA tag if its score is above
+.I FLOAT
+times the primary alignment score [0.8].
 .TP
 .B -y
 Copy FASTA/Q comments to output
@@ -335,6 +348,13 @@ batch is at least
 in size. If there are less than 40000 sequences in the batch, continue to read
 until the size reaches
 .IR NUM2 .
+.TP
+.BR --mmap
+Load the index by mapping the index files to RAM. With this option, the
+first index loading time will be slower but the following index loading will be
+faster if the index remains in RAM. Multiple minibwa processes on the same
+machine can also use the same index without duplicating it. On most systems,
+this option reduces the alignment speed.
 .TP
 .B --version
 Print version number

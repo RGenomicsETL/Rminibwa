@@ -262,6 +262,123 @@ print.rminibwa_fastx_batch <- function(x, ...) {
   invisible(x)
 }
 
+#' Open a lossless native FASTQ query-group stream
+#'
+#' Opens a one-template-at-a-time, bounded-memory native stream for a
+#' downstream C/C++/Rcpp BAM producer. Each `mb_query_stream_next()` result is
+#' one complete normalized QNAME group and remains valid only until the next
+#' call on the stream or cancellation. The normal producer path neither creates
+#' SAM text nor calls R once per alignment record; downstream native consumers
+#' should use the versioned API in `Rminibwa.h`.
+#'
+#' `mode` and `threads` are deliberately required. `threads` is the complete
+#' caller-owned minibwa thread budget: the stream creates no additional mapping
+#' worker pool. `read_group` is either `NULL` or an exact literal `@RG` record
+#' containing an `ID:` tag. It is retained byte-for-byte; library and sample
+#' metadata are never inferred. The native header view declares `SO:unsorted`
+#' and `GO:query`: groups are contiguous input templates, not lexicographically
+#' query-name sorted.
+#'
+#' Exact repeated-QNAME validation uses a caller-bounded name tracker. If the
+#' limit is reached, the stream fails with a reason code rather than emitting an
+#' ambiguous later group. Consumers must treat any stream error as an incomplete
+#' downstream output.
+#'
+#' @param path One FASTQ path for `mode = "single"`, or two ordered mate FASTQ
+#'   paths for `mode = "paired"`.
+#' @param index A native minibwa index returned by [mb_index_load()].
+#' @param opt Mapping options from [mb_opts()]. Its `threads` entry is replaced
+#'   by `threads`; its paired flag is set from `mode`.
+#' @param mode Explicit "single" or "paired" input mode.
+#' @param threads Positive total thread budget owned by the caller.
+#' @param read_group `NULL` or one exact `@RG` record with a non-empty `ID:`.
+#' @param max_seen_qnames Positive maximum number of normalized QNAMEs tracked
+#'   for exact repeated-name detection.
+#' @return `mb_query_stream()` returns a native query stream.
+#'   `mb_query_stream_next()` returns a native query group or `NULL` at EOF or
+#'   after cancellation. Group helper functions expose only debug accounting;
+#'   use the installed C API for record views.
+#' @export
+mb_query_stream <- function(path, index, opt = mb_opts(), mode, threads,
+                            read_group = NULL, max_seen_qnames = 1000000L) {
+  if (missing(mode)) stop("mode must be supplied explicitly as 'single' or 'paired'", call. = FALSE)
+  if (missing(threads)) stop("threads must be supplied as the total thread budget", call. = FALSE)
+  mode <- match.arg(mode, c("single", "paired"))
+  expected_paths <- if (identical(mode, "single")) 1L else 2L
+  if (!is.character(path) || length(path) != expected_paths || anyNA(path) || any(!nzchar(path))) {
+    stop("path length must match the explicit stream mode", call. = FALSE)
+  }
+  path <- normalizePath(path, winslash = "/", mustWork = TRUE)
+  threads <- rmb_positive_int_scalar(threads, "threads")
+  max_seen_qnames <- rmb_positive_int_scalar(max_seen_qnames, "max_seen_qnames")
+  if (!is.null(read_group) && (!is.character(read_group) || length(read_group) != 1L || is.na(read_group))) {
+    stop("read_group must be NULL or one @RG character scalar", call. = FALSE)
+  }
+  .Call(
+    RC_mb_query_stream_open, path, if (identical(mode, "paired")) 1L else 0L,
+    index, opt, threads, read_group, max_seen_qnames
+  )
+}
+
+#' @rdname mb_query_stream
+#' @param stream A native stream returned by `mb_query_stream()`.
+#' @export
+mb_query_stream_next <- function(stream) {
+  .Call(RC_mb_query_stream_next, stream)
+}
+
+#' @rdname mb_query_stream
+#' @export
+mb_query_stream_cancel <- function(stream) {
+  invisible(.Call(RC_mb_query_stream_cancel, stream))
+}
+
+#' @rdname mb_query_stream
+#' @export
+mb_query_stream_error <- function(stream) {
+  .Call(RC_mb_query_stream_error, stream)
+}
+
+#' @rdname mb_query_stream
+#' @param group A native query group returned by `mb_query_stream_next()`.
+#' @export
+mb_query_group_n_reads <- function(group) {
+  .Call(RC_mb_query_group_n_reads, group)
+}
+
+#' @rdname mb_query_stream
+#' @export
+mb_query_group_n_records <- function(group) {
+  .Call(RC_mb_query_group_n_records, group)
+}
+
+#' @rdname mb_query_stream
+#' @export
+mb_query_group_name <- function(group) {
+  .Call(RC_mb_query_group_name, group)
+}
+
+#' @rdname mb_query_stream
+#' @export
+mb_query_group_input_order <- function(group) {
+  .Call(RC_mb_query_group_input_order, group)
+}
+
+#' @export
+print.rminibwa_query_stream <- function(x, ...) {
+  cat("<rminibwa query stream>\n")
+  invisible(x)
+}
+
+#' @export
+print.rminibwa_query_group <- function(x, ...) {
+  cat("<rminibwa query group>\n")
+  cat("  qname: ", rawToChar(mb_query_group_name(x)), "\n", sep = "")
+  cat("  reads: ", mb_query_group_n_reads(x), "\n", sep = "")
+  cat("  records: ", mb_query_group_n_records(x), "\n", sep = "")
+  invisible(x)
+}
+
 # Internal count-only mapper used to keep developer benchmarks honest.
 mb_map_count <- function(x, index, opt = mb_opts(), name = NULL, meth = c("none", "c2t", "g2a")) {
   if (!is.raw(x)) stop("x must be a raw vector of sequence bytes", call. = FALSE)

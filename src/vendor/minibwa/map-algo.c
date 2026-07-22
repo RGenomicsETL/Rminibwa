@@ -41,6 +41,31 @@ end_idx_load:
 	return idx;
 }
 
+mb_idx_t *mb_idx_load_mmap(const char *prefix, int32_t is_meth, int preload)
+{
+	char *buf;
+	mb_idx_t *idx = 0;
+	l2b_t *l2b;
+	mb_bwt_t *bwt;
+	buf = kom_calloc(char, strlen(prefix) + 10);
+	strcat(strcpy(buf, prefix), ".l2b");
+	l2b = l2b_load_mmap(buf, preload);
+	if (l2b == 0) goto end_idx_load_mmap;
+	if (is_meth) strcat(strcpy(buf, prefix), ".meth.mbw");
+	else strcat(strcpy(buf, prefix), ".mbw");
+	bwt = mb_bwt_load_mmap(buf, preload);
+	if (bwt == 0) {
+		l2b_destroy(l2b);
+		goto end_idx_load_mmap;
+	}
+	mb_bwt_cache(bwt, 10); // TODO: don't hard code this
+	idx = kom_calloc(mb_idx_t, 1);
+	idx->is_meth = !!is_meth, idx->l2b = l2b, idx->bwt = bwt;
+end_idx_load_mmap:
+	free(buf);
+	return idx;
+}
+
 void mb_idx_destroy(mb_idx_t *idx)
 {
 	if (idx == 0) return;
@@ -650,11 +675,15 @@ mb_hit_t *mb_map(const mb_opt_t *opt, const mb_idx_t *idx, int32_t qlen, const c
 	uint8_t *seq;
 	int32_t i;
 	l2b_meth_t mt = mt0 == 0? L2B_METH_NONE : mt0 == 1? L2B_METH_C2T : L2B_METH_G2A;
+	if (mt != L2B_METH_NONE && !idx->is_meth) { *n_hit_ = 0; return 0; }
 	b = b0? b0 : mb_tbuf_init(1);
 	mb_opt_adap(opt, qlen, &opt_adap);
+	if (mt != L2B_METH_NONE) opt_adap.flag |= MB_F_METH; // needed in mb_map_sai()
 	seq = Kmalloc(b->km, uint8_t, qlen);
 	for (i = 0; i < qlen; ++i)
 		seq[i] = kom_nt4_table[(uint8_t)seq0[i]];
+	if (mt != L2B_METH_NONE)
+		l2b_meth_convert(mt, qlen, seq);
 	mb_seed_intv(b->km, idx->bwt, qlen, seq, opt->min_len, opt->max_sub_occ, &u);
 	kfree(b->km, seq);
 	ret = mb_map_sai(&opt_adap, idx, qlen, seq0, mt, &u, n_hit_, b, qname);
@@ -669,9 +698,10 @@ mb_hit_t **mb_map_batch(const mb_opt_t *opt, const mb_idx_t *idx, int32_t n_seq,
 	mb_sai_v *sai;
 	uint8_t **seq4;
 	void *km;
-	int32_t i, j, k, sb_st, sb_len, sb_max, is_pe = !!(opt->flag & MB_F_PE);
+	int32_t i, j, k, sb_st, sb_len, sb_max, is_pe = !!(opt->flag & MB_F_PE), is_meth = !!(opt->flag & MB_F_METH);
 
 	if (n_seq <= 0) return 0;
+	if (is_meth && !idx->is_meth) return 0;
 	b = b0? b0 : mb_tbuf_init(0);
 	km = mb_tbuf_km(b);
 	hit = (mb_hit_t**)calloc(n_seq, sizeof(mb_hit_t*));
@@ -690,9 +720,11 @@ mb_hit_t **mb_map_batch(const mb_opt_t *opt, const mb_idx_t *idx, int32_t n_seq,
 			// convert sub-batch to 4-bit encoding
 			for (k = 0; k < sb_n; ++k) {
 				int32_t idx_k = sb_st + k;
+				l2b_meth_t mt = !is_meth? L2B_METH_NONE : !is_pe || (idx_k&1) == 0? L2B_METH_C2T : L2B_METH_G2A;
 				seq4[k] = Kmalloc(km, uint8_t, qlen[idx_k]);
 				for (j = 0; j < qlen[idx_k]; ++j)
 					seq4[k][j] = kom_nt4_table[(uint8_t)seq[idx_k][j]];
+				if (mt != L2B_METH_NONE) l2b_meth_convert(mt, qlen[idx_k], seq4[k]);
 			}
 
 			// batch SMEM for sub-batch
@@ -704,12 +736,8 @@ mb_hit_t **mb_map_batch(const mb_opt_t *opt, const mb_idx_t *idx, int32_t n_seq,
 			for (k = 0; k < sb_n; ++k) {
 				int32_t idx_k = sb_st + k;
 				mb_opt_t opt_adap;
-				l2b_meth_t mt = L2B_METH_NONE;
+				l2b_meth_t mt = !is_meth? L2B_METH_NONE : !is_pe || (idx_k&1) == 0? L2B_METH_C2T : L2B_METH_G2A;
 				mb_opt_adap(opt, qlen[idx_k], &opt_adap);
-				if (opt->flag & MB_F_METH) {
-					if (is_pe) mt = (idx_k&1) == 0? L2B_METH_C2T : L2B_METH_G2A;
-					else mt = L2B_METH_C2T;
-				}
 				hit[idx_k] = mb_map_sai(&opt_adap, idx, qlen[idx_k], seq[idx_k], mt, &sai[k], &n_hit[idx_k], b, qname? qname[idx_k] : 0);
 			}
 

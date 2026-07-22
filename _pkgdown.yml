@@ -12,4 +12,7 @@ articles:
     contents:
       - simde-dispatch
       - vendoring-minibwa
+  - title: Native Consumer APIs
+    navbar: ~
+    contents:
       - downstream-c-api

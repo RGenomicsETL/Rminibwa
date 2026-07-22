@@ -409,7 +409,7 @@ static SEXP opt_value(SEXP opts, const char *key) {
     return idx >= 0 ? VECTOR_ELT(opts, idx) : R_NilValue;
 }
 
-static void apply_options(SEXP opts_x, mb_opt_t *opt) {
+void rminibwa_apply_options(SEXP opts_x, mb_opt_t *opt) {
     mb_opt_init(opt);
     SEXP preset_x = opt_value(opts_x, "preset");
     if (preset_x != R_NilValue) {
@@ -536,7 +536,7 @@ SEXP RC_mb_map_raw(SEXP x, SEXP index_x, SEXP opt_x, SEXP name_x, SEXP meth_x) {
     if (n > INT_MAX) Rf_error("x is longer than minibwa's int32 query length limit");
     RmbIndex *idx = rminibwa_index_from_sexp(index_x);
     mb_opt_t opt;
-    apply_options(opt_x, &opt);
+    rminibwa_apply_options(opt_x, &opt);
     int meth = 0;
     meth_name_to_code(meth_x, &meth);
 
@@ -560,7 +560,7 @@ SEXP RC_mb_map_batch(SEXP x, SEXP index_x, SEXP opt_x, SEXP name_x) {
 
     RmbIndex *idx = rminibwa_index_from_sexp(index_x);
     mb_opt_t opt;
-    apply_options(opt_x, &opt);
+    rminibwa_apply_options(opt_x, &opt);
     if (opt_value(opt_x, "paired") == R_NilValue) opt.flag &= ~MB_F_PE;
     n_hit = R_Calloc(n_seq, int32_t);
     mb_hit_t **hit = mb_map_batch(&opt, idx->ptr, n_seq, qlen, seq, n_hit, NULL, qname);
@@ -688,7 +688,7 @@ SEXP RC_mb_map_fastx_batch(SEXP batch_x, SEXP index_x, SEXP opt_x) {
     }
     RmbIndex *idx = rminibwa_index_from_sexp(index_x);
     mb_opt_t opt;
-    apply_options(opt_x, &opt);
+    rminibwa_apply_options(opt_x, &opt);
     SEXP paired_x = opt_value(opt_x, "paired");
     if (fq->paired) opt.flag |= MB_F_PE;
     else if (paired_x == R_NilValue || is_false_scalar(paired_x)) opt.flag &= ~MB_F_PE;
@@ -712,7 +712,7 @@ SEXP RC_mb_map_count_raw(SEXP x, SEXP index_x, SEXP opt_x, SEXP name_x, SEXP met
     if (n > INT_MAX) Rf_error("x is longer than minibwa's int32 query length limit");
     RmbIndex *idx = rminibwa_index_from_sexp(index_x);
     mb_opt_t opt;
-    apply_options(opt_x, &opt);
+    rminibwa_apply_options(opt_x, &opt);
     int meth = 0;
     meth_name_to_code(meth_x, &meth);
 

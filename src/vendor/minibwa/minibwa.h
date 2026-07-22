@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define MB_VERSION "0.3-r391"
+#define MB_VERSION "0.4-r411-dirty"
 
 #define MB_F_PAF              (0x1LL)       // output in the PAF format
 #define MB_F_NO_UNMAP         (0x2LL)       // output unmapped query sequences
@@ -125,6 +125,7 @@ extern "C" {
 #endif
 
 mb_idx_t *mb_idx_load(const char *prefix, int32_t is_meth);
+mb_idx_t *mb_idx_load_mmap(const char *prefix, int32_t is_meth, int preload);
 void mb_idx_destroy(mb_idx_t *idx);
 const char *mb_idx_ctg_name(const mb_idx_t *idx, int32_t tid);
 int64_t mb_idx_ctg_len(const mb_idx_t *idx, int32_t tid);

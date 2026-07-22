@@ -34,3 +34,7 @@ small and source-compatible with that exact commit. When bumping upstream:
   to satisfy GCC's `-Wreturn-type` analysis.
 - `0006-make-kseq-roundup-width-safe.patch`: make `kseq.h`'s `kroundup64()`
   final shift width-safe on 32-bit targets such as wasm32.
+- `0007-add-strict-single-record-fastx-reader.patch`: expose one-record,
+  reason-preserving FASTX reads so the Rminibwa query stream can reject
+  malformed/truncated paired FASTQ input instead of accepting CLI-style
+  warning-and-continue behavior.

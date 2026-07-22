@@ -29,7 +29,7 @@ MINIBWA_OBJS = \
 	$(VENDOR)/QSufSort.o \
 	$(VENDOR)/bwtgen.o
 
-OBJECTS = r_api.o altrep.o ksw_dispatch.o registration.o $(MINIBWA_OBJS)
+OBJECTS = r_api.o query_stream.o altrep.o ksw_dispatch.o registration.o $(MINIBWA_OBJS)
 
 CLI_SRCS = \
 	kommon.c \

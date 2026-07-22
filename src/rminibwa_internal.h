@@ -70,6 +70,7 @@ struct RmbAlignBatch {
 };
 
 void rminibwa_init_altrep(DllInfo *dll);
+void rminibwa_stream_init(void);
 SEXP rminibwa_align_altinteger(SEXP batch_xptr, const char *name);
 SEXP rminibwa_align_read_altinteger(SEXP batch_xptr, const char *name);
 SEXP rminibwa_align_altreal(SEXP batch_xptr, const char *name);
@@ -81,6 +82,7 @@ const char *rminibwa_ksw_backend(void);
 
 RmbIndex *rminibwa_index_from_sexp(SEXP x);
 RmbAlignBatch *rminibwa_align_mut_from_sexp(SEXP x);
+void rminibwa_apply_options(SEXP opts_x, mb_opt_t *opt);
 SEXP rminibwa_align_xptr_new(RmbAlignBatch *batch);
 
 #endif

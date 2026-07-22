@@ -115,7 +115,7 @@ int mb_fmt_sam_hdr(kstring_t *str, const l2b_t *idx, const char *rg, const char 
 	if (ver) kom_sprintf_lite(str, "\tVN:%s", ver);
 	if (argc > 1) {
 		kom_sprintf_lite(str, "\tCL:minibwa");
-		for (i = 1; i < argc; ++i)
+		for (i = 0; i < argc; ++i)
 			kom_sprintf_lite(str, " %s", argv[i]);
 	}
 	kom_sprintf_lite(str, "\n");

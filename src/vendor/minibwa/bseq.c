@@ -82,6 +82,27 @@ static inline void kseq2bseq(kseq_t *ks, mb_bseq1_t *s, int with_qual, int with_
 	s->l_seq = ks->seq.l;
 }
 
+int mb_bseq_read1(mb_bseq_file_t *fp, int with_qual, int with_comment, mb_bseq1_t *out)
+{
+	int ret;
+	if (fp == 0 || out == 0) return -1;
+	memset(out, 0, sizeof(*out));
+	ret = kseq_read(fp->ks);
+	if (ret < 0) return ret == -1? 0 : -1;
+	kseq2bseq(fp->ks, out, with_qual, with_comment);
+	return 1;
+}
+
+void mb_bseq_destroy1(mb_bseq1_t *out)
+{
+	if (out == 0) return;
+	free(out->name);
+	free(out->seq);
+	free(out->qual);
+	free(out->comment);
+	memset(out, 0, sizeof(*out));
+}
+
 mb_bseq1_t *mb_bseq_read(mb_bseq_file_t *fp, int64_t chunk_size, int with_qual, int with_comment, int frag_mode, int min_cnt, int64_t max_chunk_size, int *n_)
 {
 	int64_t size = 0;
