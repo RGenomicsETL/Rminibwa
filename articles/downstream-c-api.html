@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rminibwa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0-0.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0-0.0.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -185,6 +185,46 @@ the batch SEXP, obtains the opaque <code>RmbAlignBatch *</code>, and
 reads borrowed <code>int32_t</code>, <code>int64_t</code>, and packed
 CIGAR buffers directly.</p>
 </div>
+<div class="section level2">
+<h2 id="lossless-query-group-stream">Lossless query-group stream<a class="anchor" aria-label="anchor" href="#lossless-query-group-stream"></a>
+</h2>
+<p>For BAM preparation, use <code><a href="../reference/mb_query_stream.html">mb_query_stream()</a></code> rather than
+repeatedly converting alignment batches. It requires an explicit
+<code>mode</code> and total <code>threads</code> budget, and returns
+exactly one normalized QNAME group per native <code><a href="https://rdrr.io/r/base/Control.html" class="external-link">next</a></code> call. In
+paired mode it rejects mismatched names, mate ordering/count errors, and
+malformed or truncated FASTQ before an ambiguous group is emitted. A
+supplied <code>@RG</code> record is retained exactly; no sample or
+library metadata is invented.</p>
+<p>The installed API is deliberately a versioned POD/view interface
+rather than a <code>bam1_t</code> handoff, so a consumer compiled
+against its own htslib can encode each record once. Its header view
+reports <code>SO:unsorted</code> and <code>GO:query</code>: contiguous
+groups preserve input order but are not query-name sorted:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>Rminibwa_stream_abi_version<span class="op">()</span> <span class="op">!=</span> RMINIBWA_STREAM_ABI_VERSION<span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    Rf_error<span class="op">(</span><span class="st">"Rminibwa stream ABI mismatch"</span><span class="op">);</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>RmbQueryStream <span class="op">*</span>stream <span class="op">=</span> Rminibwa_stream_from_sexp<span class="op">(</span>stream_x<span class="op">);</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="dt">const</span> RmbQueryGroup <span class="op">*</span>group <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>Rminibwa_header_view header<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>Rminibwa_query_group_view_t view<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>Rminibwa_stream_header<span class="op">(</span>stream<span class="op">,</span> <span class="op">&amp;</span>header<span class="op">);</span> <span class="co">/* @SQ, exact @RG, @PG facts */</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>Rminibwa_stream_next<span class="op">(</span>stream<span class="op">,</span> <span class="op">&amp;</span>group<span class="op">)</span> <span class="op">==</span> RMINIBWA_STREAM_OK<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    Rminibwa_query_group_view<span class="op">(</span>group<span class="op">,</span> <span class="op">&amp;</span>view<span class="op">);</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    <span class="co">/* Consume view.reads and view.records before requesting the next group. */</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="co">/* record.cigar and typed AS/NM/MQ/MC/RG tags are native, not SAM text. */</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Every pointer in <code>Rminibwa_query_group_view_t</code> is borrowed
+and is valid only until <code>Rminibwa_stream_next()</code>,
+<code>Rminibwa_stream_cancel()</code>, or stream destruction. This
+creates one-group back-pressure: a consumer pauses simply by not
+requesting another group. <code>Rminibwa_stream_cancel()</code> releases
+the current alignment buffers and leaves a reason code/message available
+through the C API (or <code><a href="../reference/mb_query_stream.html">mb_query_stream_error()</a></code> for
+diagnostics). The producer has no extra worker pool;
+<code>threads</code> is the complete minibwa mapping budget.</p>
+</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
@@ -196,7 +236,7 @@ CIGAR buffers directly.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

@@ -27,6 +27,15 @@
   : Map paired query sequence batches with native minibwa
 - [`mb_opts()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_opts.md)
   : Native minibwa options
+- [`mb_query_stream()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+  [`mb_query_stream_next()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+  [`mb_query_stream_cancel()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+  [`mb_query_stream_error()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+  [`mb_query_group_n_reads()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+  [`mb_query_group_n_records()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+  [`mb_query_group_name()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+  [`mb_query_group_input_order()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+  : Open a lossless native FASTQ query-group stream
 - [`minibwa_available()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/minibwa_available.md)
   : Test whether the minibwa CLI is available
 - [`minibwa_cli()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/minibwa_cli.md)

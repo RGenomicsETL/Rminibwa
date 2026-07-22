@@ -22,13 +22,13 @@ Source:
 [`DESCRIPTION`](https://github.com/sounkou-bioinfo/Rminibwa/blob/main/DESCRIPTION)
 
 Toure S (2026). *Rminibwa: Native R Bindings and SIMD Dispatch for
-'minibwa'*. R package version 0.3.0-0.0.1.9000,
+'minibwa'*. R package version 0.4.0-0.0.1.9000,
 <https://github.com/sounkou-bioinfo/Rminibwa>.
 
     @Manual{,
       title = {Rminibwa: Native R Bindings and SIMD Dispatch for 'minibwa'},
       author = {Sounkou Mahamane Toure},
       year = {2026},
-      note = {R package version 0.3.0-0.0.1.9000},
+      note = {R package version 0.4.0-0.0.1.9000},
       url = {https://github.com/sounkou-bioinfo/Rminibwa},
     }

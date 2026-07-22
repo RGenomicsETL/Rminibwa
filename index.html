@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">Rminibwa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0-0.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0-0.0.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,13 +138,43 @@
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int32_t</span> <span class="op">*</span>tid <span class="op">=</span> Rminibwa_align_i32_col<span class="op">(</span>batch<span class="op">,</span> <span class="st">"tid"</span><span class="op">);</span></span>
 <span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="cf">return</span> Rf_ScalarInteger<span class="op">(</span>n <span class="op">&amp;&amp;</span> n_read <span class="op">&amp;&amp;</span> hit_count <span class="op">&amp;&amp;</span> tid <span class="op">?</span> tid<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">:</span> NA_INTEGER<span class="op">);</span></span>
 <span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>A complete in-process consumer compiled with Rtinycc is in <code>vignettes/downstream-c-api.Rmd</code> and <code>inst/capi/rminibwa_tinycc_consumer.c</code>.</p>
+<p>A complete in-process batch consumer compiled with Rtinycc is in <code>vignettes/downstream-c-api.Rmd</code> and <code>inst/capi/rminibwa_tinycc_consumer.c</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="query-group-bam-producer-path">Query-group BAM producer path<a class="anchor" aria-label="anchor" href="#query-group-bam-producer-path"></a>
+</h2>
+<p><code><a href="reference/mb_query_stream.html">mb_query_stream()</a></code> is the producer interface for a native BAM/CRAM finalizer. It maps exactly one complete normalized QNAME group at a time, so a consumer can make its duplicate decision while both mates and every primary, secondary, supplementary, or unmapped record are still together. The R helpers below are diagnostics only; a production consumer calls the installed C API and never materializes these records in R or as SAM text.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">td</span>, <span class="st">"query-groups.fq"</span><span class="op">)</span></span>
+<span><span class="va">stream_reads</span> <span class="op">&lt;-</span> <span class="va">reads</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"@template-1"</span>, <span class="st">"@template-2"</span><span class="op">)</span>, <span class="va">stream_reads</span>, <span class="st">"+"</span>, <span class="fu"><a href="https://rdrr.io/r/base/strrep.html" class="external-link">strrep</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">stream_reads</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="va">fq</span>,</span>
+<span>  useBytes <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">stream</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mb_query_stream.html">mb_query_stream</a></span><span class="op">(</span></span>
+<span>  <span class="va">fq</span>, <span class="va">idx</span>, <span class="fu"><a href="reference/mb_opts.html">mb_opts</a></span><span class="op">(</span><span class="st">"sr"</span>, out_n <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"single"</span>, threads <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  read_group <span class="op">=</span> <span class="st">"@RG\tID:rg1\tSM:example\tLB:example-library"</span>,</span>
+<span>  max_seen_qnames <span class="op">=</span> <span class="fl">10L</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mb_query_stream.html">mb_query_stream_next</a></span><span class="op">(</span><span class="va">stream</span><span class="op">)</span></span>
+<span><span class="va">group</span></span>
+<span><span class="co">#&gt; &lt;rminibwa query group&gt;</span></span>
+<span><span class="co">#&gt;   qname: template-1</span></span>
+<span><span class="co">#&gt;   reads: 1</span></span>
+<span><span class="co">#&gt;   records: 51</span></span>
+<span><span class="fu"><a href="reference/mb_query_stream.html">mb_query_stream_cancel</a></span><span class="op">(</span><span class="va">stream</span><span class="op">)</span></span></code></pre></div>
+<p>The C consumer checks <code>RMINIBWA_STREAM_ABI_VERSION</code>, obtains a <code>Rminibwa_header_view</code> once, and then calls <code>Rminibwa_stream_next()</code> followed by <code>Rminibwa_query_group_view()</code> for each group. The view supplies original sequence/quality bytes, full BAM-packed CIGARs including clips, SAM flags, mate fields, typed AS/NM/MQ/MC/RG tags, input order, and exact <code>@SQ</code>, <code>@RG</code>, <code>@PG</code>, <code>SO:unsorted</code>, and <code>GO:query</code> facts. Its pointers are borrowed until the next call, which provides one-group back-pressure and bounded alignment memory.</p>
+<p>Rminibwa intentionally has <strong>no</strong> hard <code>Rduckhts</code> or htslib dependency: this keeps the aligner producer portable and prevents two htslib contracts from being loaded into it. The DuckHTS/Rduckhts finalizer is the downstream consumer and should require <code>Rduckhts (&gt;= 1.5.0-0.1.0)</code>, use its installed <code>rduckhts_htslib_config()</code> receipt at configure time, and link only against that receipt. This POD boundary lets the DuckHTS adapter encode each record once with its own htslib instead of passing <code>bam1_t</code> across package boundaries.</p>
+<p>A complete stream C-API smoke consumer is in <code>inst/capi/rminibwa_tinycc_stream_consumer.c</code>; the full lifetime and cancellation contract is documented in <code>vignettes/downstream-c-api.Rmd</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="simd-dispatch">SIMD dispatch<a class="anchor" aria-label="anchor" href="#simd-dispatch"></a>
 </h2>
 <p>The package follows the RsimdDispatch style: compile portable and ISA-specific objects separately, then select an available backend at runtime. On x86_64 this can include SSE4 and AVX2. On other architectures the portable backend is used.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/simd_info.html">simd_info</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;rminibwa SIMD dispatch&gt;</span></span>
 <span><span class="co">#&gt;   selected:  avx2</span></span>
@@ -164,11 +194,11 @@
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">make</span> rd       <span class="co"># roxygen docs</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">make</span> test0    <span class="co"># tinytest suite against the installed package</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">make</span> check    <span class="co"># R CMD check --as-cran --no-manual</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="fu">make</span> pkgdown  <span class="co"># local site build</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="fu">make</span> asm      <span class="co"># inspect staged backend assembly</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">make</span> rd       <span class="co"># roxygen docs</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">make</span> test0    <span class="co"># tinytest suite against the installed package</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">make</span> check    <span class="co"># R CMD check --as-cran --no-manual</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">make</span> pkgdown  <span class="co"># local site build</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">make</span> asm      <span class="co"># inspect staged backend assembly</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -219,7 +249,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

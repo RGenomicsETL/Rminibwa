@@ -123,3 +123,48 @@ if (inherits(ffi, "error")) {
 The C function never asks R to materialize a data frame. It receives the
 batch SEXP, obtains the opaque `RmbAlignBatch *`, and reads borrowed
 `int32_t`, `int64_t`, and packed CIGAR buffers directly.
+
+## Lossless query-group stream
+
+For BAM preparation, use
+[`mb_query_stream()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+rather than repeatedly converting alignment batches. It requires an
+explicit `mode` and total `threads` budget, and returns exactly one
+normalized QNAME group per native
+[`next`](https://rdrr.io/r/base/Control.html) call. In paired mode it
+rejects mismatched names, mate ordering/count errors, and malformed or
+truncated FASTQ before an ambiguous group is emitted. A supplied `@RG`
+record is retained exactly; no sample or library metadata is invented.
+
+The installed API is deliberately a versioned POD/view interface rather
+than a `bam1_t` handoff, so a consumer compiled against its own htslib
+can encode each record once. Its header view reports `SO:unsorted` and
+`GO:query`: contiguous groups preserve input order but are not
+query-name sorted:
+
+``` c
+if (Rminibwa_stream_abi_version() != RMINIBWA_STREAM_ABI_VERSION)
+    Rf_error("Rminibwa stream ABI mismatch");
+
+RmbQueryStream *stream = Rminibwa_stream_from_sexp(stream_x);
+const RmbQueryGroup *group = NULL;
+Rminibwa_header_view header;
+Rminibwa_query_group_view_t view;
+
+Rminibwa_stream_header(stream, &header); /* @SQ, exact @RG, @PG facts */
+while (Rminibwa_stream_next(stream, &group) == RMINIBWA_STREAM_OK) {
+    Rminibwa_query_group_view(group, &view);
+    /* Consume view.reads and view.records before requesting the next group. */
+    /* record.cigar and typed AS/NM/MQ/MC/RG tags are native, not SAM text. */
+}
+```
+
+Every pointer in `Rminibwa_query_group_view_t` is borrowed and is valid
+only until `Rminibwa_stream_next()`, `Rminibwa_stream_cancel()`, or
+stream destruction. This creates one-group back-pressure: a consumer
+pauses simply by not requesting another group.
+`Rminibwa_stream_cancel()` releases the current alignment buffers and
+leaves a reason code/message available through the C API (or
+[`mb_query_stream_error()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+for diagnostics). The producer has no extra worker pool; `threads` is
+the complete minibwa mapping budget.
