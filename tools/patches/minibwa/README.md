@@ -38,3 +38,6 @@ small and source-compatible with that exact commit. When bumping upstream:
   reason-preserving FASTX reads so the Rminibwa query stream can reject
   malformed/truncated paired FASTQ input instead of accepting CLI-style
   warning-and-continue behavior.
+- `0008-add-windows-file-mapping.patch`: implement the `kom_mmap_file()` and
+  `kom_munmap()` portability layer with Win32 file mappings on Windows/Rtools,
+  while preserving the upstream POSIX `mmap()` implementation elsewhere.

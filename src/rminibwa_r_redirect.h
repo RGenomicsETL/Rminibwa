@@ -11,7 +11,7 @@
 static FILE *rminibwa_stdout_sentinel = (FILE *) 0x1;
 static FILE *rminibwa_stderr_sentinel = (FILE *) 0x2;
 
-static int rminibwa_vfprintf(FILE *stream, const char *fmt, va_list ap)
+static inline int rminibwa_vfprintf(FILE *stream, const char *fmt, va_list ap)
 {
     if (stream == rminibwa_stdout_sentinel) {
         Rvprintf(fmt, ap);
@@ -24,7 +24,7 @@ static int rminibwa_vfprintf(FILE *stream, const char *fmt, va_list ap)
     return vfprintf(stream, fmt, ap);
 }
 
-static int rminibwa_fprintf(FILE *stream, const char *fmt, ...)
+static inline int rminibwa_fprintf(FILE *stream, const char *fmt, ...)
 {
     int ret;
     va_list ap;
@@ -34,7 +34,7 @@ static int rminibwa_fprintf(FILE *stream, const char *fmt, ...)
     return ret;
 }
 
-static int rminibwa_fputc(int c, FILE *stream)
+static inline int rminibwa_fputc(int c, FILE *stream)
 {
     if (stream == rminibwa_stdout_sentinel) {
         Rprintf("%c", c);

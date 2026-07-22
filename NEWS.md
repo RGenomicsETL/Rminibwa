@@ -1,5 +1,7 @@
 # Rminibwa 0.4.0-0.0.1.9000
 
+- Add a Win32 file-mapping implementation for vendored `minibwa` so Windows
+  and Rtools builds no longer require the unavailable POSIX `sys/mman.h`.
 - Add a versioned, lossless native FASTQ query-group stream for downstream
   BAM/CRAM producers. The installed C API exposes bounded one-template views,
   typed CIGAR/tag data, header facts, cooperative cancellation, explicit
