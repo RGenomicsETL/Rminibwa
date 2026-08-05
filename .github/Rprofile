@@ -1,4 +1,5 @@
 options(repos = c(
+  RGenomicsETL = "https://rgenomicsetl.r-universe.dev",
   sounkou = "https://sounkou-bioinfo.r-universe.dev",
   CRAN = "https://cloud.r-project.org"
 ))

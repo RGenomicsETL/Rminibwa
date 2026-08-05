@@ -46,10 +46,11 @@ jobs:
           R -q -e '
             .libPaths(c(Sys.getenv("R_LIBS_USER"), .libPaths()))
             options(repos = c(
+              RGenomicsETL = "https://rgenomicsetl.r-universe.dev",
               sounkou = "https://sounkou-bioinfo.r-universe.dev",
               CRAN = "https://cloud.r-project.org"
             ))
-            pkgs <- c("knitr", "rmarkdown", "roxygen2", "RsimdDispatch", "Rtinycc", "tinytest")
+            pkgs <- c("knitr", "rmarkdown", "roxygen2", "Rduckhts", "RsimdDispatch", "Rtinycc", "tinytest")
             need <- setdiff(pkgs,
               rownames(installed.packages(lib.loc = Sys.getenv("R_LIBS_USER"))))
             if (length(need)) install.packages(need, lib = Sys.getenv("R_LIBS_USER"))
