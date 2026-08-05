@@ -1,20 +1,30 @@
 # Changelog
 
-## Rminibwa 0.4.0-0.0.1.9000
+## Rminibwa 0.6.0-0.0.1.9000
 
+- Make `Rduckhts` the required htslib provider. Configure now validates
+  and consumes its exact installed linking receipt on Unix and Windows,
+  and
+  [`rminibwa_htslib_info()`](https://rgenomicsetl.github.io/Rminibwa/reference/rminibwa_htslib_info.md)
+  verifies the linked version and build identity at runtime. This
+  provides one verified htslib identity for future native
+  alignment-format work without selecting its output architecture.
 - Add a Win32 file-mapping implementation for vendored `minibwa` so
   Windows and Rtools builds no longer require the unavailable POSIX
   `sys/mman.h`.
 - Add a versioned, lossless native FASTQ query-group stream for
-  downstream BAM/CRAM producers. The installed C API exposes bounded
-  one-template views, typed CIGAR/tag data, header facts, cooperative
-  cancellation, explicit ownership/lifetime rules, exact read-group
-  preservation, and reason-coded paired FASTQ validation without a
-  SAM-text or per-record-R-callback path.
-- Update vendored `minibwa` to exact upstream commit
-  `84019dc454013134570479c50355741ed8318a8e` (`MB_VERSION`
-  `0.4-r411-dirty`; archive SHA256
-  `fe7e5a14bf26882b3f77804bec210c3b0fa3e073555664da1ce6f53aef80565c`).
+  downstream native record consumers. The installed C API exposes
+  bounded one-template views, typed CIGAR/tag data, header facts,
+  cooperative cancellation, explicit ownership/lifetime rules, exact
+  read-group preservation, and reason-coded paired FASTQ validation
+  without a SAM-text or per-record-R-callback path.
+- Update vendored `minibwa` to the exact upstream v0.6 release commit
+  `ebc59eaff045898c6a9daed4689302547d1326cb` (`MB_VERSION` `0.6-r416`;
+  archive SHA256
+  `f84b42299923ccfcab19f46bfdb7fdb4562d87c95cb0fc591823458474870474`).
+  This includes the paired-end mapQ revision, memory-mapped index
+  loading, `--outs`, BS-seq API support, and the corrected `-I` fixed
+  insert-size distribution behavior from upstream v0.5 and v0.6.
 
 ## Rminibwa 0.3.0-0.0.1.9000
 
@@ -23,12 +33,12 @@
 - Make `kseq.h`’s `kroundup64()` width-safe on 32-bit targets such as
   wasm32, avoiding Emscripten `-Wshift-count-overflow` diagnostics.
 - Add
-  [`mb_map_batch()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_map_batch.md)
+  [`mb_map_batch()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_map_batch.md)
   for native columnar mapping of many query sequences in one call, plus
-  [`mb_map_pair_batch()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_map_pair_batch.md)
+  [`mb_map_pair_batch()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_map_pair_batch.md)
   for explicit two-batch paired-end input.
 - Add native FASTX iterators and
-  [`mb_map_fastx_batch()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_fastx_iter.md)
+  [`mb_map_fastx_batch()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_fastx_iter.md)
   so file-backed batches can be mapped without materializing sequence
   strings in R.
 - Add a read-level sidecar to alignment batches with read IDs, query
@@ -36,7 +46,7 @@
   exposed through ALTREP read columns and the C API.
 - Add a concise print method for native alignment batches.
 - Return
-  [`simd_info()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/simd_info.md)
+  [`simd_info()`](https://rgenomicsetl.github.io/Rminibwa/reference/simd_info.md)
   as a classed `rminibwa_simd_info` object with a concise print method
   for dispatch diagnostics.
 - Fold in upstream `minibwa` v0.3 / `MB_VERSION` `0.3-r391` at commit

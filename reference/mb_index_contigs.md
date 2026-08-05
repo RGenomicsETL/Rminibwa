@@ -14,7 +14,7 @@ mb_index_contigs(index)
 - index:
 
   Index handle returned by
-  [`mb_index_load()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_index_load.md).
+  [`mb_index_load()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_index_load.md).
 
 ## Value
 

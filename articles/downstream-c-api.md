@@ -127,7 +127,7 @@ batch SEXP, obtains the opaque `RmbAlignBatch *`, and reads borrowed
 ## Lossless query-group stream
 
 For BAM preparation, use
-[`mb_query_stream()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+[`mb_query_stream()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_query_stream.md)
 rather than repeatedly converting alignment batches. It requires an
 explicit `mode` and total `threads` budget, and returns exactly one
 normalized QNAME group per native
@@ -137,10 +137,12 @@ truncated FASTQ before an ambiguous group is emitted. A supplied `@RG`
 record is retained exactly; no sample or library metadata is invented.
 
 The installed API is deliberately a versioned POD/view interface rather
-than a `bam1_t` handoff, so a consumer compiled against its own htslib
-can encode each record once. Its header view reports `SO:unsorted` and
-`GO:query`: contiguous groups preserve input order but are not
-query-name sorted:
+than a `bam1_t` handoff. Rminibwa itself now links to the exact htslib
+build supplied by Rduckhts, so native adapters can encode BAM or CRAM
+without crossing package boundaries with allocator-owned `bam1_t`
+objects or loading another htslib contract. Its header view reports
+`SO:unsorted` and `GO:query`: contiguous groups preserve input order but
+are not query-name sorted:
 
 ``` c
 if (Rminibwa_stream_abi_version() != RMINIBWA_STREAM_ABI_VERSION)
@@ -165,6 +167,6 @@ stream destruction. This creates one-group back-pressure: a consumer
 pauses simply by not requesting another group.
 `Rminibwa_stream_cancel()` releases the current alignment buffers and
 leaves a reason code/message available through the C API (or
-[`mb_query_stream_error()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_query_stream.md)
+[`mb_query_stream_error()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_query_stream.md)
 for diagnostics). The producer has no extra worker pool; `threads` is
 the complete minibwa mapping budget.

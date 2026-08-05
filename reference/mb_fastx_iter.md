@@ -58,12 +58,12 @@ mb_map_fastx_batch(batch, index, opt = mb_opts())
 - index:
 
   Index handle returned by
-  [`mb_index_load()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_index_load.md).
+  [`mb_index_load()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_index_load.md).
 
 - opt:
 
   Options list from
-  [`mb_opts()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_opts.md).
+  [`mb_opts()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_opts.md).
 
 ## Value
 

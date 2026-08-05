@@ -46,12 +46,12 @@ mb_query_group_input_order(group)
 - index:
 
   A native minibwa index returned by
-  [`mb_index_load()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_index_load.md).
+  [`mb_index_load()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_index_load.md).
 
 - opt:
 
   Mapping options from
-  [`mb_opts()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_opts.md).
+  [`mb_opts()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_opts.md).
   Its `threads` entry is replaced by `threads`; its paired flag is set
   from `mode`.
 

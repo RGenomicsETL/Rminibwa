@@ -23,7 +23,7 @@ minibwa_map(
 - index:
 
   Index prefix produced by
-  [`minibwa_index()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/minibwa_index.md)
+  [`minibwa_index()`](https://rgenomicsetl.github.io/Rminibwa/reference/minibwa_index.md)
   or the minibwa CLI.
 
 - reads:

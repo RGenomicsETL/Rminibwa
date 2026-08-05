@@ -2,7 +2,7 @@
 
 `mb_map_batch()` maps many reads in one native call and returns the same
 columnar alignment-batch object as
-[`mb_map()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_map.md).
+[`mb_map()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_map.md).
 Input may be a character vector of sequence bytes or a list whose
 elements are raw vectors or character scalars. Unlike the CLI reader,
 this direct batch API defaults to unpaired mapping unless
@@ -25,12 +25,12 @@ mb_map_batch(x, index, opt = mb_opts(), name = NULL)
 - index:
 
   Index handle returned by
-  [`mb_index_load()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_index_load.md).
+  [`mb_index_load()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_index_load.md).
 
 - opt:
 
   Options list from
-  [`mb_opts()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_opts.md).
+  [`mb_opts()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_opts.md).
 
 - name:
 

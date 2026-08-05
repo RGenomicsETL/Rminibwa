@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rminibwa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0-0.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0-0.0.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/sounkou-bioinfo/Rminibwa/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/RGenomicsETL/Rminibwa/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -62,7 +62,7 @@
       <h1>Downstream C API</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/sounkou-bioinfo/Rminibwa/blob/main/vignettes/downstream-c-api.Rmd" class="external-link"><code>vignettes/downstream-c-api.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/RGenomicsETL/Rminibwa/blob/main/vignettes/downstream-c-api.Rmd" class="external-link"><code>vignettes/downstream-c-api.Rmd</code></a></small>
       <div class="d-none name"><code>downstream-c-api.Rmd</code></div>
     </div>
 
@@ -85,7 +85,7 @@ rendering helper and compiled from the same
 <h2 id="build-a-tiny-alignment-batch">Build a tiny alignment batch<a class="anchor" aria-label="anchor" href="#build-a-tiny-alignment-batch"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sounkou-bioinfo/Rminibwa" class="external-link">Rminibwa</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RGenomicsETL/Rminibwa" class="external-link">Rminibwa</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">td</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"rminibwa-capi-"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">td</span><span class="op">)</span></span>
@@ -197,10 +197,13 @@ malformed or truncated FASTQ before an ambiguous group is emitted. A
 supplied <code>@RG</code> record is retained exactly; no sample or
 library metadata is invented.</p>
 <p>The installed API is deliberately a versioned POD/view interface
-rather than a <code>bam1_t</code> handoff, so a consumer compiled
-against its own htslib can encode each record once. Its header view
-reports <code>SO:unsorted</code> and <code>GO:query</code>: contiguous
-groups preserve input order but are not query-name sorted:</p>
+rather than a <code>bam1_t</code> handoff. Rminibwa itself now links to
+the exact htslib build supplied by Rduckhts, so native adapters can
+encode BAM or CRAM without crossing package boundaries with
+allocator-owned <code>bam1_t</code> objects or loading another htslib
+contract. Its header view reports <code>SO:unsorted</code> and
+<code>GO:query</code>: contiguous groups preserve input order but are
+not query-name sorted:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>Rminibwa_stream_abi_version<span class="op">()</span> <span class="op">!=</span> RMINIBWA_STREAM_ABI_VERSION<span class="op">)</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    Rf_error<span class="op">(</span><span class="st">"Rminibwa stream ABI mismatch"</span><span class="op">);</span></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>

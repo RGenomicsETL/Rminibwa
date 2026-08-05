@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Native R Bindings and SIMD Dispatch for minibwa">
-<meta name="description" content="Provides native R bindings to the minibwa genomic read aligner with raw-vector query input, external-pointer alignment batches, ALTREP column views, and an installed C API for downstream packages. The package builds staged Single Instruction Multiple Data (SIMD) KSW backends and selects portable scalar, SSE4, or AVX2 code at runtime without global instruction-set compiler flags.">
-<meta property="og:description" content="Provides native R bindings to the minibwa genomic read aligner with raw-vector query input, external-pointer alignment batches, ALTREP column views, and an installed C API for downstream packages. The package builds staged Single Instruction Multiple Data (SIMD) KSW backends and selects portable scalar, SSE4, or AVX2 code at runtime without global instruction-set compiler flags.">
+<meta name="description" content="Provides native R bindings to the minibwa genomic read aligner with raw-vector query input, external-pointer alignment batches, ALTREP column views, and an installed C API for downstream packages. The package builds staged Single Instruction Multiple Data (SIMD) KSW backends, selects portable scalar, SSE4, or AVX2 code at runtime without global instruction-set compiler flags, and links to the exact htslib build supplied by Rduckhts as its native alignment-format dependency.">
+<meta property="og:description" content="Provides native R bindings to the minibwa genomic read aligner with raw-vector query input, external-pointer alignment batches, ALTREP column views, and an installed C API for downstream packages. The package builds staged Single Instruction Multiple Data (SIMD) KSW backends, selects portable scalar, SSE4, or AVX2 code at runtime without global instruction-set compiler flags, and links to the exact htslib build supplied by Rduckhts as its native alignment-format dependency.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">Rminibwa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0-0.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0-0.0.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/sounkou-bioinfo/Rminibwa/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/RGenomicsETL/Rminibwa/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -69,7 +69,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Rminibwa"</span>,</span>
 <span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"https://sounkou-bioinfo.r-universe.dev"</span>,</span>
+<span>    <span class="st">"https://rgenomicsetl.r-universe.dev"</span>,</span>
 <span>    <span class="st">"https://cloud.r-project.org"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -81,7 +81,7 @@
 <h2 id="cli-wrapper">CLI wrapper<a class="anchor" aria-label="anchor" href="#cli-wrapper"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sounkou-bioinfo/Rminibwa" class="external-link">Rminibwa</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RGenomicsETL/Rminibwa" class="external-link">Rminibwa</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/minibwa_version.html">minibwa_version</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">prefix</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/minibwa_index.html">minibwa_index</a></span><span class="op">(</span><span class="st">"ref.fa"</span>, threads <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
@@ -93,7 +93,7 @@
 </h2>
 <p>The native path avoids data frames in the hot alignment shape. <code><a href="reference/mb_map_batch.html">mb_map_batch()</a></code> and <code><a href="reference/mb_fastx_iter.html">mb_map_fastx_batch()</a></code> return external-pointer batches; columns are exposed lazily to R and can also be read from C.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sounkou-bioinfo/Rminibwa" class="external-link">Rminibwa</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RGenomicsETL/Rminibwa" class="external-link">Rminibwa</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">td</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"rminibwa-readme-"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">td</span><span class="op">)</span></span>
@@ -141,9 +141,9 @@
 <p>A complete in-process batch consumer compiled with Rtinycc is in <code>vignettes/downstream-c-api.Rmd</code> and <code>inst/capi/rminibwa_tinycc_consumer.c</code>.</p>
 </div>
 <div class="section level2">
-<h2 id="query-group-bam-producer-path">Query-group BAM producer path<a class="anchor" aria-label="anchor" href="#query-group-bam-producer-path"></a>
+<h2 id="query-group-producer-prototype">Query-group producer prototype<a class="anchor" aria-label="anchor" href="#query-group-producer-prototype"></a>
 </h2>
-<p><code><a href="reference/mb_query_stream.html">mb_query_stream()</a></code> is the producer interface for a native BAM/CRAM finalizer. It maps exactly one complete normalized QNAME group at a time, so a consumer can make its duplicate decision while both mates and every primary, secondary, supplementary, or unmapped record are still together. The R helpers below are diagnostics only; a production consumer calls the installed C API and never materializes these records in R or as SAM text.</p>
+<p><code><a href="reference/mb_query_stream.html">mb_query_stream()</a></code> maps one complete normalized QNAME group at a time and exposes both mates plus every primary, secondary, supplementary, or unmapped record to a native consumer. The consumer can retain the template facts needed for later duplicate decisions without materializing SAM or per-record R objects. Paired groups currently use minibwa’s fixed option values; this prototype is not a sample-level insert calibrator, coordinate sorter, or BAM finalizer. The R helpers below are diagnostics only.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">td</span>, <span class="st">"query-groups.fq"</span><span class="op">)</span></span>
 <span><span class="va">stream_reads</span> <span class="op">&lt;-</span> <span class="va">reads</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span>
@@ -167,14 +167,16 @@
 <span><span class="co">#&gt;   records: 51</span></span>
 <span><span class="fu"><a href="reference/mb_query_stream.html">mb_query_stream_cancel</a></span><span class="op">(</span><span class="va">stream</span><span class="op">)</span></span></code></pre></div>
 <p>The C consumer checks <code>RMINIBWA_STREAM_ABI_VERSION</code>, obtains a <code>Rminibwa_header_view</code> once, and then calls <code>Rminibwa_stream_next()</code> followed by <code>Rminibwa_query_group_view()</code> for each group. The view supplies original sequence/quality bytes, full BAM-packed CIGARs including clips, SAM flags, mate fields, typed AS/NM/MQ/MC/RG tags, input order, and exact <code>@SQ</code>, <code>@RG</code>, <code>@PG</code>, <code>SO:unsorted</code>, and <code>GO:query</code> facts. Its pointers are borrowed until the next call, which provides one-group back-pressure and bounded alignment memory.</p>
-<p>Rminibwa intentionally has <strong>no</strong> hard <code>Rduckhts</code> or htslib dependency: this keeps the aligner producer portable and prevents two htslib contracts from being loaded into it. The DuckHTS/Rduckhts finalizer is the downstream consumer and should require <code>Rduckhts (&gt;= 1.5.0-0.1.0)</code>, use its installed <code>rduckhts_htslib_config()</code> receipt at configure time, and link only against that receipt. This POD boundary lets the DuckHTS adapter encode each record once with its own htslib instead of passing <code>bam1_t</code> across package boundaries.</p>
+<p>This query-group/POD interface is a prototype. Rminibwa now has a hard <code>Rduckhts</code> dependency: configure validates <code><a href="https://rgenomicsetl.r-universe.dev/Rduckhts/reference/rduckhts_htslib_config.html" class="external-link">Rduckhts::rduckhts_htslib_config()</a></code>, compiles against its installed headers, and links only to the exact shared or static htslib artifact in that receipt. <code><a href="reference/rminibwa_htslib_info.html">rminibwa_htslib_info()</a></code> proves that the native link and the validated Rduckhts receipt agree. Future native alignment-format work can reuse this htslib rather than introduce another build; this dependency does not select a BAM, CRAM, sorting, or finalization architecture.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/rminibwa_htslib_info.html">rminibwa_htslib_info</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>A complete stream C-API smoke consumer is in <code>inst/capi/rminibwa_tinycc_stream_consumer.c</code>; the full lifetime and cancellation contract is documented in <code>vignettes/downstream-c-api.Rmd</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="simd-dispatch">SIMD dispatch<a class="anchor" aria-label="anchor" href="#simd-dispatch"></a>
 </h2>
 <p>The package follows the RsimdDispatch style: compile portable and ISA-specific objects separately, then select an available backend at runtime. On x86_64 this can include SSE4 and AVX2. On other architectures the portable backend is used.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/simd_info.html">simd_info</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;rminibwa SIMD dispatch&gt;</span></span>
 <span><span class="co">#&gt;   selected:  avx2</span></span>
@@ -194,18 +196,18 @@
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">make</span> rd       <span class="co"># roxygen docs</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">make</span> test0    <span class="co"># tinytest suite against the installed package</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">make</span> check    <span class="co"># R CMD check --as-cran --no-manual</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">make</span> pkgdown  <span class="co"># local site build</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">make</span> asm      <span class="co"># inspect staged backend assembly</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">make</span> rd       <span class="co"># roxygen docs</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">make</span> test0    <span class="co"># tinytest suite against the installed package</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">make</span> check    <span class="co"># R CMD check --as-cran --no-manual</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="fu">make</span> pkgdown  <span class="co"># local site build</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="fu">make</span> asm      <span class="co"># inspect staged backend assembly</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/sounkou-bioinfo/Rminibwa/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/sounkou-bioinfo/Rminibwa/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/RGenomicsETL/Rminibwa/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/RGenomicsETL/Rminibwa/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -235,8 +237,8 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/sounkou-bioinfo/Rminibwa/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/sounkou-bioinfo/Rminibwa/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://sounkou-bioinfo.r-universe.dev/Rminibwa" class="external-link"><img src="https://sounkou-bioinfo.r-universe.dev/badges/Rminibwa" alt="R-universe"></a></li>
+<li><a href="https://github.com/RGenomicsETL/Rminibwa/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/RGenomicsETL/Rminibwa/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://rgenomicsetl.r-universe.dev/Rminibwa" class="external-link"><img src="https://rgenomicsetl.r-universe.dev/badges/Rminibwa" alt="R-universe"></a></li>
 </ul>
 </div>
 

@@ -2,7 +2,7 @@
 
 `mb_map()` is pipe-friendly: the sequence bytes are the first argument.
 The result is a native alignment batch external pointer. Use
-[`mb_align_col()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_align_n.md)
+[`mb_align_col()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_align_n.md)
 for ALTREP column views or pass the batch to downstream C consumers.
 
 ## Usage
@@ -20,12 +20,12 @@ mb_map(x, index, opt = mb_opts(), name = NULL, meth = c("none", "c2t", "g2a"))
 - index:
 
   Index handle returned by
-  [`mb_index_load()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_index_load.md).
+  [`mb_index_load()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_index_load.md).
 
 - opt:
 
   Options list from
-  [`mb_opts()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_opts.md).
+  [`mb_opts()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_opts.md).
 
 - name:
 

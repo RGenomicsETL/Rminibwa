@@ -25,9 +25,9 @@ mb_align_cigar_words(x)
 - x:
 
   Native alignment batch returned by
-  [`mb_map()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_map.md)
+  [`mb_map()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_map.md)
   or
-  [`mb_map_batch()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/mb_map_batch.md).
+  [`mb_map_batch()`](https://rgenomicsetl.github.io/Rminibwa/reference/mb_map_batch.md).
 
 - name:
 

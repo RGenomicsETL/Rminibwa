@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rminibwa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0-0.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0-0.0.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +26,7 @@
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/sounkou-bioinfo/Rminibwa/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/RGenomicsETL/Rminibwa/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -36,14 +36,15 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/sounkou-bioinfo/Rminibwa/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/RGenomicsETL/Rminibwa/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.0-0.0.1.9000" id="rminibwa-040-0019000">Rminibwa 0.4.0-0.0.1.9000<a class="anchor" aria-label="anchor" href="#rminibwa-040-0019000"></a></h2>
-<ul><li>Add a Win32 file-mapping implementation for vendored <code>minibwa</code> so Windows and Rtools builds no longer require the unavailable POSIX <code>sys/mman.h</code>.</li>
-<li>Add a versioned, lossless native FASTQ query-group stream for downstream BAM/CRAM producers. The installed C API exposes bounded one-template views, typed CIGAR/tag data, header facts, cooperative cancellation, explicit ownership/lifetime rules, exact read-group preservation, and reason-coded paired FASTQ validation without a SAM-text or per-record-R-callback path.</li>
-<li>Update vendored <code>minibwa</code> to exact upstream commit <code>84019dc454013134570479c50355741ed8318a8e</code> (<code>MB_VERSION</code> <code>0.4-r411-dirty</code>; archive SHA256 <code>fe7e5a14bf26882b3f77804bec210c3b0fa3e073555664da1ce6f53aef80565c</code>).</li>
+<h2 class="pkg-version" data-toc-text="0.6.0-0.0.1.9000" id="rminibwa-060-0019000">Rminibwa 0.6.0-0.0.1.9000<a class="anchor" aria-label="anchor" href="#rminibwa-060-0019000"></a></h2>
+<ul><li>Make <code>Rduckhts</code> the required htslib provider. Configure now validates and consumes its exact installed linking receipt on Unix and Windows, and <code><a href="../reference/rminibwa_htslib_info.html">rminibwa_htslib_info()</a></code> verifies the linked version and build identity at runtime. This provides one verified htslib identity for future native alignment-format work without selecting its output architecture.</li>
+<li>Add a Win32 file-mapping implementation for vendored <code>minibwa</code> so Windows and Rtools builds no longer require the unavailable POSIX <code>sys/mman.h</code>.</li>
+<li>Add a versioned, lossless native FASTQ query-group stream for downstream native record consumers. The installed C API exposes bounded one-template views, typed CIGAR/tag data, header facts, cooperative cancellation, explicit ownership/lifetime rules, exact read-group preservation, and reason-coded paired FASTQ validation without a SAM-text or per-record-R-callback path.</li>
+<li>Update vendored <code>minibwa</code> to the exact upstream v0.6 release commit <code>ebc59eaff045898c6a9daed4689302547d1326cb</code> (<code>MB_VERSION</code> <code>0.6-r416</code>; archive SHA256 <code>f84b42299923ccfcab19f46bfdb7fdb4562d87c95cb0fc591823458474870474</code>). This includes the paired-end mapQ revision, memory-mapped index loading, <code>--outs</code>, BS-seq API support, and the corrected <code>-I</code> fixed insert-size distribution behavior from upstream v0.5 and v0.6.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0-0.0.1.9000" id="rminibwa-030-0019000">Rminibwa 0.3.0-0.0.1.9000<a class="anchor" aria-label="anchor" href="#rminibwa-030-0019000"></a></h2>

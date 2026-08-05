@@ -2,9 +2,9 @@
 
 Low-level helper for invoking arbitrary `minibwa` commands from R.
 Prefer
-[`minibwa_index()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/minibwa_index.md)
+[`minibwa_index()`](https://rgenomicsetl.github.io/Rminibwa/reference/minibwa_index.md)
 and
-[`minibwa_map()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/minibwa_map.md)
+[`minibwa_map()`](https://rgenomicsetl.github.io/Rminibwa/reference/minibwa_map.md)
 for common workflows.
 
 ## Usage

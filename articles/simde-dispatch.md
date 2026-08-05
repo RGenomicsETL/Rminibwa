@@ -72,7 +72,7 @@ simd_backend()
 simd_set_backend("auto")
 ```
 
-[`simd_set_backend()`](https://sounkou-bioinfo.github.io/Rminibwa/reference/simd_set_backend.md)
+[`simd_set_backend()`](https://rgenomicsetl.github.io/Rminibwa/reference/simd_set_backend.md)
 errors if the requested backend was not compiled or is not supported by
 the current CPU/runtime.
 
