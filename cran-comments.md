@@ -27,5 +27,7 @@ Expected development notes:
 - Examples, tests, and vignettes use temporary files and clean up after
   themselves.
 - Tests use at most two cores; native examples request one indexing thread.
+- `Rduckhts` is required from `https://rgenomicsetl.r-universe.dev`; it is
+  Rminibwa's sole provider of the exact htslib headers and shared/static library.
 - `RsimdDispatch` is required from `https://sounkou-bioinfo.r-universe.dev`
   until the needed development version is on CRAN.

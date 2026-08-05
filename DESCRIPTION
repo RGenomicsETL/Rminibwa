@@ -1,6 +1,6 @@
 Package: Rminibwa
 Title: Native R Bindings and SIMD Dispatch for 'minibwa'
-Version: 0.4.0-0.0.1.9000
+Version: 0.6.0-0.0.1.9000
 Authors@R: c(
     person(given = "Sounkou Mahamane", family = "Toure",
       email = "sounkoutoure@gmail.com", role = c("aut", "cre")),
@@ -16,13 +16,16 @@ Authors@R: c(
 Description: Provides native R bindings to the 'minibwa' genomic read aligner
     with raw-vector query input, external-pointer alignment batches, ALTREP
     column views, and an installed C API for downstream packages. The package
-    builds staged Single Instruction Multiple Data ('SIMD') KSW backends and
+    builds staged Single Instruction Multiple Data ('SIMD') KSW backends,
     selects portable scalar, SSE4, or AVX2 code at runtime without global
-    instruction-set compiler flags.
+    instruction-set compiler flags, and links to the exact 'htslib' build
+    supplied by 'Rduckhts' as its native alignment-format dependency.
 License: GPL (>= 2)
 Depends:
-    R (>= 4.0.0)
+    R (>= 4.4.0)
 SystemRequirements: GNU make, zlib
+Imports:
+    Rduckhts (>= 1.5.1-0.1.1)
 LinkingTo:
     RsimdDispatch (>= 0.1.2.9001)
 Suggests:
@@ -34,8 +37,9 @@ Suggests:
 VignetteBuilder: knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
-Additional_repositories: https://sounkou-bioinfo.r-universe.dev
-URL: https://github.com/sounkou-bioinfo/Rminibwa,
-    https://sounkou-bioinfo.github.io/Rminibwa/
-BugReports: https://github.com/sounkou-bioinfo/Rminibwa/issues
+Additional_repositories: https://rgenomicsetl.r-universe.dev,
+    https://sounkou-bioinfo.r-universe.dev
+URL: https://github.com/RGenomicsETL/Rminibwa,
+    https://rgenomicsetl.github.io/Rminibwa/
+BugReports: https://github.com/RGenomicsETL/Rminibwa/issues
+Config/roxygen2/version: 8.0.0

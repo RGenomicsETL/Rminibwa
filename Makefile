@@ -55,7 +55,7 @@ check: build
 
 install_deps:
 	R \
-	-e 'options(repos = c(sounkou = "https://sounkou-bioinfo.r-universe.dev", CRAN = "https://cloud.r-project.org"))' \
+	-e 'options(repos = c(RGenomicsETL = "https://rgenomicsetl.r-universe.dev", sounkou = "https://sounkou-bioinfo.r-universe.dev", CRAN = "https://cloud.r-project.org"))' \
 	-e 'if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")' \
 	-e 'remotes::install_deps(dependencies = TRUE)'
 

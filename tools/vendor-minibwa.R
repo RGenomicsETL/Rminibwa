@@ -33,6 +33,7 @@ git_repo <- field("GitRepository")
 commit <- field("Commit")
 commit_date <- field("Date")
 archive_url <- field("ArchiveURL")
+archive_sha256 <- field("ArchiveSHA256")
 patch_dir <- file.path(root, field("PatchDirectory"))
 short <- substr(commit, 1L, 12L)
 
@@ -66,6 +67,7 @@ print_status <- function() {
   cat("Commit: ", commit, "\n", sep = "")
   cat("Date: ", commit_date, "\n", sep = "")
   cat("ArchiveURL: ", archive_url, "\n", sep = "")
+  cat("ArchiveSHA256: ", archive_sha256, "\n", sep = "")
   cat("ArchivePath: ", archive_path, "\n", sep = "")
   cat("VendorDir: ", target_dir, "\n", sep = "")
   cat("Patches:\n")
@@ -77,11 +79,30 @@ print_status <- function() {
   }
 }
 
+verify_archive <- function(path) {
+  actual <- sha256_file(path)
+  if (!identical(actual, archive_sha256)) {
+    stop(
+      "Unexpected archive SHA256: ", actual,
+      " (expected ", archive_sha256, ")",
+      call. = FALSE
+    )
+  }
+  message("Archive SHA256: ", actual)
+  invisible(actual)
+}
+
 download_archive <- function() {
   dir.create(archive_dir, recursive = TRUE, showWarnings = FALSE)
   message("Downloading ", component, " ", short, " to ", archive_path)
   utils::download.file(archive_url, archive_path, quiet = FALSE, mode = "wb")
-  message("Archive SHA256: ", sha256_file(archive_path))
+  tryCatch(
+    verify_archive(archive_path),
+    error = function(e) {
+      unlink(archive_path, force = TRUE)
+      stop(e)
+    }
+  )
   invisible(archive_path)
 }
 
@@ -145,6 +166,7 @@ unpack_archive <- function() {
   if (!file.exists(archive_path)) {
     stop("Archive not found: ", archive_path, "\nRun `Rscript tools/vendor-minibwa.R download` first.", call. = FALSE)
   }
+  archive_sha <- verify_archive(archive_path)
   dir.create(vendor_root, recursive = TRUE, showWarnings = FALSE)
   unlink(target_dir, recursive = TRUE, force = TRUE)
 
@@ -161,7 +183,7 @@ unpack_archive <- function() {
   verify_version(target_dir)
   applied <- apply_patches(target_dir)
   prune_vendor_tree(target_dir)
-  write_vendor_metadata(target_dir, sha256_file(archive_path), applied)
+  write_vendor_metadata(target_dir, archive_sha, applied)
   message("Vendored ", component, " ", version, " commit ", commit)
   message("Wrote ", target_dir)
   invisible(target_dir)

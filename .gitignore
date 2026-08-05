@@ -24,6 +24,8 @@ src/rmb-cli/
 config.log
 .sync/
 .local/
+.pi/
+learning/
 src/vendor/_archives/
 vignettes/*.html
 bench/python/

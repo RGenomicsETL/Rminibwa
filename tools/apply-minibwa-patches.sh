@@ -35,16 +35,21 @@ else
   exit 1
 fi
 
+apply_directory=()
+if [ "$checkout_rel" != "." ]; then
+  apply_directory=("--directory=$checkout_rel")
+fi
+
 apply_check() {
-  git -C "$git_top" apply --check --directory="$checkout_rel" "$1"
+  git -C "$git_top" apply --check "${apply_directory[@]}" "$1"
 }
 
 apply_reverse_check() {
-  git -C "$git_top" apply --reverse --check --directory="$checkout_rel" "$1"
+  git -C "$git_top" apply --reverse --check "${apply_directory[@]}" "$1"
 }
 
 apply_patch() {
-  git -C "$git_top" apply --whitespace=nowarn --directory="$checkout_rel" "$1"
+  git -C "$git_top" apply --whitespace=nowarn "${apply_directory[@]}" "$1"
 }
 
 for patch in "${patches[@]}"; do

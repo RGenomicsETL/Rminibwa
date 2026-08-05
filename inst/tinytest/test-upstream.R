@@ -1,6 +1,7 @@
 info <- minibwa_upstream_info()
 expect_equal(info$Component, "minibwa")
 expect_true(grepl("^[0-9a-f]{40}$", info$Commit))
+expect_true(grepl("^[0-9a-f]{64}$", info$ArchiveSHA256))
 expect_true(nzchar(info$Version))
 expect_true(grepl("github.com/lh3/minibwa", info$Repository, fixed = TRUE))
 expect_true(grepl("tools/patches/minibwa", info$PatchDirectory, fixed = TRUE))

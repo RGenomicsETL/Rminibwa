@@ -31,6 +31,7 @@ SEXP RC_simd_set_backend(SEXP backend_s);
 SEXP RC_simd_backend(void);
 SEXP RC_simd_counters(SEXP reset_s);
 SEXP RC_simd_info(void);
+SEXP RC_rminibwa_htslib_runtime(void);
 
 static const R_CallMethodDef call_methods[] = {
     {"RC_mb_index_load",        (DL_FUNC) &RC_mb_index_load,        2},
@@ -60,6 +61,7 @@ static const R_CallMethodDef call_methods[] = {
     {"RC_simd_backend",          (DL_FUNC) &RC_simd_backend,          0},
     {"RC_simd_counters",         (DL_FUNC) &RC_simd_counters,         1},
     {"RC_simd_info",             (DL_FUNC) &RC_simd_info,             0},
+    {"RC_rminibwa_htslib_runtime", (DL_FUNC) &RC_rminibwa_htslib_runtime, 0},
     {NULL, NULL, 0}
 };
 

@@ -3,8 +3,8 @@ STAGED_OBJECTS = @RMINIBWA_STAGED_OBJECTS@
 CLI_DIR = rmb-cli
 CLI_BIN = $(CLI_DIR)/minibwa
 
-PKG_CPPFLAGS = -I. -I../inst/include -I$(VENDOR) @RMINIBWA_SIMDE_CPPFLAGS@ -include rminibwa_r_redirect.h -DRMINIBWA_BUILDING -DHAVE_KALLOC -DUSE_GPL
-PKG_LIBS = $(STAGED_OBJECTS) -lz -lm -lpthread
+PKG_CPPFLAGS = -I. -I../inst/include -I$(VENDOR) @RMINIBWA_SIMDE_CPPFLAGS@ @RMINIBWA_HTSLIB_CPPFLAGS@ -include rminibwa_r_redirect.h -DRMINIBWA_BUILDING -DHAVE_KALLOC -DUSE_GPL
+PKG_LIBS = $(STAGED_OBJECTS) @RMINIBWA_HTSLIB_LDFLAGS@ -lz -lm -lpthread
 CLI_CPPFLAGS = -I$(VENDOR) @RMINIBWA_SIMDE_CPPFLAGS@ -DRMINIBWA_USE_SIMDE -DSIMDE_NO_NATIVE -DHAVE_KALLOC -DUSE_GPL
 CLI_LIBS = -lz -lm -lpthread
 
@@ -29,7 +29,7 @@ MINIBWA_OBJS = \
 	$(VENDOR)/QSufSort.o \
 	$(VENDOR)/bwtgen.o
 
-OBJECTS = r_api.o query_stream.o altrep.o ksw_dispatch.o registration.o $(MINIBWA_OBJS)
+OBJECTS = r_api.o query_stream.o htslib_bridge.o altrep.o ksw_dispatch.o registration.o $(MINIBWA_OBJS)
 
 CLI_SRCS = \
 	kommon.c \

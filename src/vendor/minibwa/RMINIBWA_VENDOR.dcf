@@ -1,14 +1,14 @@
 Component: minibwa
-Version: 0.4-r411-dirty
+Version: 0.6-r416
 Repository: https://github.com/lh3/minibwa
 GitRepository: https://github.com/lh3/minibwa.git
-Commit: 84019dc454013134570479c50355741ed8318a8e
-Date: 2026-07-20
-ArchiveURL: https://github.com/lh3/minibwa/archive/84019dc454013134570479c50355741ed8318a8e.tar.gz
-ArchiveSHA256: fe7e5a14bf26882b3f77804bec210c3b0fa3e073555664da1ce6f53aef80565c
+Commit: ebc59eaff045898c6a9daed4689302547d1326cb
+Date: 2026-07-30
+ArchiveURL: https://github.com/lh3/minibwa/archive/ebc59eaff045898c6a9daed4689302547d1326cb.tar.gz
+ArchiveSHA256: f84b42299923ccfcab19f46bfdb7fdb4562d87c95cb0fc591823458474870474
 VendoredSource: src/vendor/minibwa
 PatchDirectory: tools/patches/minibwa
 Patches: 0001-ksw-use-simde-include-layer.patch, 0002-fix-checked-reads-and-subbatch-memset.patch, 0003-add-avx2-wide-extd2-kernel.patch, 0004-fix-mingw-kalloc-size-t-format.patch, 0005-fix-mingw-kthread-worker-return-warning.patch, 0006-make-kseq-roundup-width-safe.patch, 0007-add-strict-single-record-fastx-reader.patch, 0008-add-windows-file-mapping.patch, 0009-fix-strict-c-diagnostics.patch
 VendoredScope: top-level minibwa C sources and headers; repository metadata, test data, manuscript assets, examples, and mimalloc omitted
-VendoredAtUTC: 2026-07-22T22:57:40Z
+VendoredAtUTC: 2026-08-05T16:48:00Z
 License: Rminibwa is GPL (>= 2). Upstream minibwa is MIT with bundled third-party notices in LICENSE.txt.

@@ -5,8 +5,8 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/sounkou-bioinfo/Rminibwa/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sounkou-bioinfo/Rminibwa/actions/workflows/R-CMD-check.yaml)
-[![R-universe](https://sounkou-bioinfo.r-universe.dev/badges/Rminibwa)](https://sounkou-bioinfo.r-universe.dev/Rminibwa)
+[![R-CMD-check](https://github.com/RGenomicsETL/Rminibwa/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/RGenomicsETL/Rminibwa/actions/workflows/R-CMD-check.yaml)
+[![R-universe](https://rgenomicsetl.r-universe.dev/badges/Rminibwa)](https://rgenomicsetl.r-universe.dev/Rminibwa)
 <!-- badges: end -->
 
 Rminibwa is an R interface to [minibwa](https://github.com/lh3/minibwa),
@@ -26,7 +26,7 @@ backends and selected at runtime.
 install.packages(
   "Rminibwa",
   repos = c(
-    "https://sounkou-bioinfo.r-universe.dev",
+    "https://rgenomicsetl.r-universe.dev",
     "https://cloud.r-project.org"
   )
 )
@@ -117,15 +117,16 @@ A complete in-process batch consumer compiled with Rtinycc is in
 `vignettes/downstream-c-api.Rmd` and
 `inst/capi/rminibwa_tinycc_consumer.c`.
 
-## Query-group BAM producer path
+## Query-group producer prototype
 
-`mb_query_stream()` is the producer interface for a native BAM/CRAM
-finalizer. It maps exactly one complete normalized QNAME group at a
-time, so a consumer can make its duplicate decision while both mates and
-every primary, secondary, supplementary, or unmapped record are still
-together. The R helpers below are diagnostics only; a production
-consumer calls the installed C API and never materializes these records
-in R or as SAM text.
+`mb_query_stream()` maps one complete normalized QNAME group at a time
+and exposes both mates plus every primary, secondary, supplementary, or
+unmapped record to a native consumer. The consumer can retain the
+template facts needed for later duplicate decisions without
+materializing SAM or per-record R objects. Paired groups currently use
+minibwa’s fixed option values; this prototype is not a sample-level
+insert calibrator, coordinate sorter, or BAM finalizer. The R helpers
+below are diagnostics only.
 
 ``` r
 fq <- file.path(td, "query-groups.fq")
@@ -160,14 +161,19 @@ input order, and exact `@SQ`, `@RG`, `@PG`, `SO:unsorted`, and
 `GO:query` facts. Its pointers are borrowed until the next call, which
 provides one-group back-pressure and bounded alignment memory.
 
-Rminibwa intentionally has **no** hard `Rduckhts` or htslib dependency:
-this keeps the aligner producer portable and prevents two htslib
-contracts from being loaded into it. The DuckHTS/Rduckhts finalizer is
-the downstream consumer and should require `Rduckhts (>= 1.5.0-0.1.0)`,
-use its installed `rduckhts_htslib_config()` receipt at configure time,
-and link only against that receipt. This POD boundary lets the DuckHTS
-adapter encode each record once with its own htslib instead of passing
-`bam1_t` across package boundaries.
+This query-group/POD interface is a prototype. Rminibwa now has a hard
+`Rduckhts` dependency: configure validates
+`Rduckhts::rduckhts_htslib_config()`, compiles against its installed
+headers, and links only to the exact shared or static htslib artifact in
+that receipt. `rminibwa_htslib_info()` proves that the native link and
+the validated Rduckhts receipt agree. Future native alignment-format
+work can reuse this htslib rather than introduce another build; this
+dependency does not select a BAM, CRAM, sorting, or finalization
+architecture.
+
+``` r
+rminibwa_htslib_info()
+```
 
 A complete stream C-API smoke consumer is in
 `inst/capi/rminibwa_tinycc_stream_consumer.c`; the full lifetime and

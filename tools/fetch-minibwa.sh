@@ -26,6 +26,11 @@ case "$dest" in
 esac
 
 if [ -d "$dest/.git" ]; then
+  # This directory is a disposable synchronization cache. A prior portable
+  # developer build may have applied the Rminibwa patch queue in place, so
+  # restore the cached checkout before moving it to the newly pinned ref.
+  git -C "$dest" reset --hard HEAD >/dev/null
+  git -C "$dest" clean -fdx >/dev/null
   git -C "$dest" fetch --depth 1 origin "$ref"
   git -C "$dest" checkout --detach FETCH_HEAD
   git -C "$dest" reset --hard FETCH_HEAD >/dev/null

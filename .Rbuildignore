@@ -19,6 +19,8 @@
 ^Meta$
 ^\.sync$
 ^\.local$
+^\.pi$
+^design$
 ^src/vendor/_archives$
 ^src/vendor/_archives/.*$
 ^config\.log$

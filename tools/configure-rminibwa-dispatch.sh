@@ -50,13 +50,21 @@ if [ -z "${CPICFLAGS:-}" ] && [ -n "${R_HOME:-}" ] && [ -x "${R_HOME}/bin/R" ]; 
     CPICFLAGS=$("${R_HOME}/bin/R" CMD config CPICFLAGS 2>/dev/null || true)
 fi
 
+RSCRIPT_BIN=${RMINIBWA_RSCRIPT:-}
+if [ -z "$RSCRIPT_BIN" ] && [ -n "${R_HOME:-}" ] && [ -x "${R_HOME}/bin/Rscript" ]; then
+    RSCRIPT_BIN="${R_HOME}/bin/Rscript"
+fi
+if [ -z "$RSCRIPT_BIN" ]; then
+    RSCRIPT_BIN=$(command -v Rscript || true)
+fi
+if [ -z "$RSCRIPT_BIN" ] || [ ! -x "$RSCRIPT_BIN" ]; then
+    echo "ERROR: Rscript is required to resolve Rminibwa build dependencies" >&2
+    exit 1
+fi
+
 SIMDE_INCLUDE_DIR=${RMINIBWA_SIMDE_INCLUDE_DIR:-}
 if [ -z "$SIMDE_INCLUDE_DIR" ]; then
-    if [ -n "${R_HOME:-}" ] && [ -x "${R_HOME}/bin/Rscript" ]; then
-        SIMDE_INCLUDE_DIR=$("${R_HOME}/bin/Rscript" -e 'cat(system.file("include", package = "RsimdDispatch"))' 2>/dev/null || true)
-    elif command -v Rscript >/dev/null 2>&1; then
-        SIMDE_INCLUDE_DIR=$(Rscript -e 'cat(system.file("include", package = "RsimdDispatch"))' 2>/dev/null || true)
-    fi
+    SIMDE_INCLUDE_DIR=$("$RSCRIPT_BIN" -e 'cat(system.file("include", package = "RsimdDispatch"))' 2>/dev/null || true)
 fi
 if [ -z "$SIMDE_INCLUDE_DIR" ] || [ ! -d "$SIMDE_INCLUDE_DIR/simde" ]; then
     echo "ERROR: could not find SIMDe headers from RsimdDispatch" >&2
@@ -69,6 +77,24 @@ CONFDIR=$(mktemp -d "$TMPDIR/rminibwa-conf-XXXXXX")
 trap 'rm -rf "$CONFDIR"' EXIT INT HUP TERM
 mkdir -p "$OBJ_DIR_PATH" "$(dirname "$CONFIG_OUT_PATH")"
 rm -f "$OBJ_DIR_PATH"/*.o
+
+HTSLIB_CONTRACT_TOOL="$ROOT/tools/rduckhts-htslib-contract.R"
+HTSLIB_CONTRACT_OUT="$CONFDIR/rduckhts-htslib-contract"
+if [ ! -f "$HTSLIB_CONTRACT_TOOL" ]; then
+    echo "ERROR: cannot find Rduckhts contract resolver: $HTSLIB_CONTRACT_TOOL" >&2
+    exit 1
+fi
+"$RSCRIPT_BIN" "$HTSLIB_CONTRACT_TOOL" "$HTSLIB_CONTRACT_OUT"
+if [ "$(wc -l < "$HTSLIB_CONTRACT_OUT" | tr -d '[:space:]')" -ne 6 ]; then
+    echo "ERROR: Rduckhts htslib contract resolver returned an invalid receipt" >&2
+    exit 1
+fi
+RMINIBWA_HTSLIB_CPPFLAGS=$(sed -n '1p' "$HTSLIB_CONTRACT_OUT")
+RMINIBWA_HTSLIB_LDFLAGS=$(sed -n '2p' "$HTSLIB_CONTRACT_OUT")
+RMINIBWA_HTSLIB_VERSION=$(sed -n '3p' "$HTSLIB_CONTRACT_OUT")
+RMINIBWA_HTSLIB_SOURCE_ID=$(sed -n '4p' "$HTSLIB_CONTRACT_OUT")
+RMINIBWA_HTSLIB_BUILD_ID=$(sed -n '5p' "$HTSLIB_CONTRACT_OUT")
+RMINIBWA_HTSLIB_LINK=$(sed -n '6p' "$HTSLIB_CONTRACT_OUT")
 
 sed_escape() {
     printf '%s' "$1" | sed 's/[\\&|]/\\&/g'
@@ -167,10 +193,15 @@ EOF
 
 STAGED_OBJECTS_ESC=$(sed_escape "$STAGED_OBJECTS")
 SIMDE_CPPFLAGS_ESC=$(sed_escape "$RMINIBWA_SIMDE_CPPFLAGS")
+HTSLIB_CPPFLAGS_ESC=$(sed_escape "$RMINIBWA_HTSLIB_CPPFLAGS")
+HTSLIB_LDFLAGS_ESC=$(sed_escape "$RMINIBWA_HTSLIB_LDFLAGS")
 sed \
     -e "s|@RMINIBWA_STAGED_OBJECTS@|${STAGED_OBJECTS_ESC}|g" \
     -e "s|@RMINIBWA_SIMDE_CPPFLAGS@|${SIMDE_CPPFLAGS_ESC}|g" \
+    -e "s|@RMINIBWA_HTSLIB_CPPFLAGS@|${HTSLIB_CPPFLAGS_ESC}|g" \
+    -e "s|@RMINIBWA_HTSLIB_LDFLAGS@|${HTSLIB_LDFLAGS_ESC}|g" \
     "$MAKEVARS_IN_PATH" > "$MAKEVARS_OUT_PATH"
 
 echo "Rminibwa configure: staged objects='$STAGED_OBJECTS'"
+echo "Rminibwa configure: htslib='$RMINIBWA_HTSLIB_VERSION' source='$RMINIBWA_HTSLIB_SOURCE_ID' build='$RMINIBWA_HTSLIB_BUILD_ID' link='$RMINIBWA_HTSLIB_LINK'"
 echo "Rminibwa configure: wrote $CONFIG_OUT and $MAKEVARS_OUT"

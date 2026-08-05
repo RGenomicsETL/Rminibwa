@@ -8,20 +8,25 @@
 \description{
 Rminibwa wraps the upstream \code{minibwa} genomic read aligner with native C
 bindings, raw-vector query input, external-pointer alignment batches, ALTREP
-column views, downstream C-callable accessors, and runtime-dispatched KSW
-SIMD backends.
+column views, downstream C-callable accessors, runtime-dispatched KSW SIMD
+backends, and the exact htslib build supplied by Rduckhts.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/sounkou-bioinfo/Rminibwa}
-  \item \url{https://sounkou-bioinfo.github.io/Rminibwa/}
-  \item Report bugs at \url{https://github.com/sounkou-bioinfo/Rminibwa/issues}
+  \item \url{https://github.com/RGenomicsETL/Rminibwa}
+  \item \url{https://rgenomicsetl.github.io/Rminibwa/}
+  \item Report bugs at \url{https://github.com/RGenomicsETL/Rminibwa/issues}
 }
 
 }
 \author{
 \strong{Maintainer}: Sounkou Mahamane Toure \email{sounkoutoure@gmail.com}
+
+Authors:
+\itemize{
+  \item Sounkou Mahamane Toure \email{sounkoutoure@gmail.com}
+}
 
 Other contributors:
 \itemize{

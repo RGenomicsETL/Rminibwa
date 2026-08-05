@@ -1,0 +1,16 @@
+info <- rminibwa_htslib_info()
+receipt <- Rduckhts::rduckhts_htslib_config(validate = TRUE)
+
+expect_true(inherits(info, "rminibwa_htslib_info"))
+expect_identical(info$provider, "Rduckhts")
+expect_identical(info$linked_version, receipt$htslib_version)
+expect_identical(info$receipt_version, receipt$htslib_version)
+expect_identical(info$source_id, receipt$source_id)
+expect_identical(info$build_id, receipt$build_id)
+expect_identical(info$link, receipt$link)
+expect_identical(info$feature_bits, receipt$runtime_feature_bits)
+expect_true(is.character(info$feature_string) && nzchar(info$feature_string))
+expect_true(isTRUE(info$features$cram))
+
+expect_error(rminibwa_htslib_info(NA), "`validate` must be TRUE or FALSE")
+expect_error(rminibwa_htslib_info(1), "`validate` must be TRUE or FALSE")
