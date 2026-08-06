@@ -9,6 +9,9 @@
   verifies the linked version and build identity at runtime. This
   provides one verified htslib identity for future native
   alignment-format work without selecting its output architecture.
+  Browser-wasm builds now omit the direct adapter explicitly because
+  `rwasm` exposes only Rduckhts’s host-native library to downstream
+  configure scripts.
 - Add a Win32 file-mapping implementation for vendored `minibwa` so
   Windows and Rtools builds no longer require the unavailable POSIX
   `sys/mman.h`.

@@ -197,13 +197,15 @@ malformed or truncated FASTQ before an ambiguous group is emitted. A
 supplied <code>@RG</code> record is retained exactly; no sample or
 library metadata is invented.</p>
 <p>The installed API is deliberately a versioned POD/view interface
-rather than a <code>bam1_t</code> handoff. Rminibwa itself now links to
-the exact htslib build supplied by Rduckhts, so native adapters can
-encode BAM or CRAM without crossing package boundaries with
+rather than a <code>bam1_t</code> handoff. On native platforms, Rminibwa
+links to the exact htslib build supplied by Rduckhts, so native adapters
+can encode BAM or CRAM without crossing package ownership with
 allocator-owned <code>bam1_t</code> objects or loading another htslib
-contract. Its header view reports <code>SO:unsorted</code> and
-<code>GO:query</code>: contiguous groups preserve input order but are
-not query-name sorted:</p>
+contract. Browser-wasm builds omit this direct adapter because
+<code>rwasm</code> exposes only Rduckhts’s host-native library to
+downstream configure scripts. Its header view reports
+<code>SO:unsorted</code> and <code>GO:query</code>: contiguous groups
+preserve input order but are not query-name sorted:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>Rminibwa_stream_abi_version<span class="op">()</span> <span class="op">!=</span> RMINIBWA_STREAM_ABI_VERSION<span class="op">)</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    Rf_error<span class="op">(</span><span class="st">"Rminibwa stream ABI mismatch"</span><span class="op">);</span></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>

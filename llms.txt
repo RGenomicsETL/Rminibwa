@@ -161,15 +161,18 @@ input order, and exact `@SQ`, `@RG`, `@PG`, `SO:unsorted`, and
 provides one-group back-pressure and bounded alignment memory.
 
 This query-group/POD interface is a prototype. Rminibwa now has a hard
-`Rduckhts` dependency: configure validates
+`Rduckhts` dependency: on native platforms, configure validates
 [`Rduckhts::rduckhts_htslib_config()`](https://rgenomicsetl.r-universe.dev/Rduckhts/reference/rduckhts_htslib_config.html),
 compiles against its installed headers, and links only to the exact
 shared or static htslib artifact in that receipt.
 [`rminibwa_htslib_info()`](https://rgenomicsetl.github.io/Rminibwa/reference/rminibwa_htslib_info.md)
 proves that the native link and the validated Rduckhts receipt agree.
-Future native alignment-format work can reuse this htslib rather than
-introduce another build; this dependency does not select a BAM, CRAM,
-sorting, or finalization architecture.
+Browser-wasm builds keep the mapping runtime but omit this direct
+adapter because `rwasm` exposes only the host-native Rduckhts link
+artifact to a downstream configure script. Future native
+alignment-format work can reuse this htslib rather than introduce
+another build; this dependency does not select a BAM, CRAM, sorting, or
+finalization architecture.
 
 ``` r
 
