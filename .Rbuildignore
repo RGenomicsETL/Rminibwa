@@ -21,6 +21,7 @@
 ^\.local$
 ^\.pi$
 ^design$
+^learning$
 ^src/vendor/_archives$
 ^src/vendor/_archives/.*$
 ^config\.log$

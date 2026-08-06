@@ -16,9 +16,15 @@ linked and receipt versions, source and build identities, link mode,
 runtime feature bits/string, and compiled htslib features.
 }
 \description{
-Rminibwa links to the exact installed htslib contract exported by
-Rduckhts. This function compares the version reached through Rminibwa's
-native library with Rduckhts's validated build receipt.
+On native platforms, Rminibwa links to the exact installed htslib contract
+exported by Rduckhts. This function compares the version reached through
+Rminibwa's native library with Rduckhts's validated build receipt.
+}
+\details{
+The direct adapter is unavailable in browser-wasm builds because \code{rwasm}
+runs configure with a host-native Rduckhts installation rather than its
+target wasm archive. The function reports that limitation instead of
+attempting to pass an incompatible host library to \code{wasm-ld}.
 }
 \examples{
 rminibwa_htslib_info()

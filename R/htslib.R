@@ -1,8 +1,13 @@
 #' Inspect the htslib Supplied by Rduckhts
 #'
-#' Rminibwa links to the exact installed htslib contract exported by
-#' Rduckhts. This function compares the version reached through Rminibwa's
-#' native library with Rduckhts's validated build receipt.
+#' On native platforms, Rminibwa links to the exact installed htslib contract
+#' exported by Rduckhts. This function compares the version reached through
+#' Rminibwa's native library with Rduckhts's validated build receipt.
+#'
+#' The direct adapter is unavailable in browser-wasm builds because `rwasm`
+#' runs configure with a host-native Rduckhts installation rather than its
+#' target wasm archive. The function reports that limitation instead of
+#' attempting to pass an incompatible host library to `wasm-ld`.
 #'
 #' @param validate Whether Rduckhts should validate its installed headers,
 #'   library, receipt, and loaded DuckHTS runtime.
@@ -20,8 +25,8 @@ rminibwa_htslib_info <- function(validate = TRUE) {
     stop("`validate` must be TRUE or FALSE.", call. = FALSE)
   }
 
-  config <- Rduckhts::rduckhts_htslib_config(validate = validate)
   runtime <- .Call(RC_rminibwa_htslib_runtime)
+  config <- Rduckhts::rduckhts_htslib_config(validate = validate)
   linked_version <- runtime$version
   if (!identical(linked_version, config$htslib_version)) {
     stop(

@@ -1,6 +1,11 @@
 #include <R.h>
 #include <Rinternals.h>
 
+#ifndef RMINIBWA_WITH_HTSLIB
+#error "RMINIBWA_WITH_HTSLIB must be defined by configure"
+#endif
+
+#if RMINIBWA_WITH_HTSLIB
 #include <htslib/hts.h>
 
 SEXP RC_rminibwa_htslib_runtime(void)
@@ -28,3 +33,13 @@ SEXP RC_rminibwa_htslib_runtime(void)
     UNPROTECT(2);
     return out;
 }
+#else
+SEXP RC_rminibwa_htslib_runtime(void)
+{
+    Rf_error(
+        "Rminibwa's direct htslib adapter is unavailable in browser-wasm builds; "
+        "rwasm configure can see only Rduckhts's host-native link artifacts"
+    );
+    return R_NilValue;
+}
+#endif

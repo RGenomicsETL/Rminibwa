@@ -40,6 +40,11 @@ CC_BIN=$(printf '%s\n' "$R_CC_CMD" | awk '{print $1}')
 CC_REST=$(printf '%s\n' "$R_CC_CMD" | sed 's/^[^[:space:]]*[[:space:]]*//')
 CC_EXTRA=${RMINIBWA_CC_EXTRA:-$CC_REST}
 
+TARGET_WASM=0
+case "$(basename "$CC_BIN") ${RMINIBWA_CONFIGURE_ARGS:-}" in
+    *emcc*|*wasm*|*emscripten*) TARGET_WASM=1 ;;
+esac
+
 if [ -z "${CFLAGS:-}" ] && [ -n "${R_HOME:-}" ] && [ -x "${R_HOME}/bin/R" ]; then
     CFLAGS=$("${R_HOME}/bin/R" CMD config CFLAGS)
 fi
@@ -84,7 +89,13 @@ if [ ! -f "$HTSLIB_CONTRACT_TOOL" ]; then
     echo "ERROR: cannot find Rduckhts contract resolver: $HTSLIB_CONTRACT_TOOL" >&2
     exit 1
 fi
-"$RSCRIPT_BIN" "$HTSLIB_CONTRACT_TOOL" "$HTSLIB_CONTRACT_OUT"
+HTSLIB_CONTRACT_MODE=native
+RMINIBWA_HTSLIB_DEFS=-DRMINIBWA_WITH_HTSLIB=1
+if [ "$TARGET_WASM" -eq 1 ]; then
+    HTSLIB_CONTRACT_MODE=wasm-no-link
+    RMINIBWA_HTSLIB_DEFS=-DRMINIBWA_WITH_HTSLIB=0
+fi
+"$RSCRIPT_BIN" "$HTSLIB_CONTRACT_TOOL" "$HTSLIB_CONTRACT_OUT" "$HTSLIB_CONTRACT_MODE"
 if [ "$(wc -l < "$HTSLIB_CONTRACT_OUT" | tr -d '[:space:]')" -ne 6 ]; then
     echo "ERROR: Rduckhts htslib contract resolver returned an invalid receipt" >&2
     exit 1
@@ -195,11 +206,13 @@ STAGED_OBJECTS_ESC=$(sed_escape "$STAGED_OBJECTS")
 SIMDE_CPPFLAGS_ESC=$(sed_escape "$RMINIBWA_SIMDE_CPPFLAGS")
 HTSLIB_CPPFLAGS_ESC=$(sed_escape "$RMINIBWA_HTSLIB_CPPFLAGS")
 HTSLIB_LDFLAGS_ESC=$(sed_escape "$RMINIBWA_HTSLIB_LDFLAGS")
+HTSLIB_DEFS_ESC=$(sed_escape "$RMINIBWA_HTSLIB_DEFS")
 sed \
     -e "s|@RMINIBWA_STAGED_OBJECTS@|${STAGED_OBJECTS_ESC}|g" \
     -e "s|@RMINIBWA_SIMDE_CPPFLAGS@|${SIMDE_CPPFLAGS_ESC}|g" \
     -e "s|@RMINIBWA_HTSLIB_CPPFLAGS@|${HTSLIB_CPPFLAGS_ESC}|g" \
     -e "s|@RMINIBWA_HTSLIB_LDFLAGS@|${HTSLIB_LDFLAGS_ESC}|g" \
+    -e "s|@RMINIBWA_HTSLIB_DEFS@|${HTSLIB_DEFS_ESC}|g" \
     "$MAKEVARS_IN_PATH" > "$MAKEVARS_OUT_PATH"
 
 echo "Rminibwa configure: staged objects='$STAGED_OBJECTS'"

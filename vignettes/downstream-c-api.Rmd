@@ -100,11 +100,13 @@ malformed or truncated FASTQ before an ambiguous group is emitted. A supplied
 `@RG` record is retained exactly; no sample or library metadata is invented.
 
 The installed API is deliberately a versioned POD/view interface rather than a
-`bam1_t` handoff. Rminibwa itself now links to the exact htslib build supplied by
-Rduckhts, so native adapters can encode BAM or CRAM without crossing package
-boundaries with allocator-owned `bam1_t` objects or loading another htslib
-contract. Its header view reports `SO:unsorted` and `GO:query`: contiguous groups
-preserve input order but are not query-name sorted:
+`bam1_t` handoff. On native platforms, Rminibwa links to the exact htslib build
+supplied by Rduckhts, so native adapters can encode BAM or CRAM without crossing
+package ownership with allocator-owned `bam1_t` objects or loading another
+htslib contract. Browser-wasm builds omit this direct adapter because `rwasm`
+exposes only Rduckhts's host-native library to downstream configure scripts. Its
+header view reports `SO:unsorted` and `GO:query`: contiguous groups preserve
+input order but are not query-name sorted:
 
 ```c
 if (Rminibwa_stream_abi_version() != RMINIBWA_STREAM_ABI_VERSION)

@@ -1,9 +1,17 @@
 #!/usr/bin/env Rscript
 
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) != 1L || !nzchar(args[[1L]])) {
-  stop("usage: rduckhts-htslib-contract.R OUTPUT", call. = FALSE)
+if (
+  length(args) < 1L || length(args) > 2L ||
+    !nzchar(args[[1L]]) ||
+    (length(args) == 2L && !args[[2L]] %in% c("native", "wasm-no-link"))
+) {
+  stop(
+    "usage: rduckhts-htslib-contract.R OUTPUT [native|wasm-no-link]",
+    call. = FALSE
+  )
 }
+mode <- if (length(args) == 2L) args[[2L]] else "native"
 
 config <- Rduckhts::rduckhts_htslib_config(validate = TRUE)
 required <- c(
@@ -45,14 +53,23 @@ make_escape <- function(value) {
   gsub("#", paste0(intToUtf8(92L), "#"), value, fixed = TRUE)
 }
 
+link_values <- if (identical(mode, "wasm-no-link")) {
+  # rwasm runs package configure under host R. Its installed Rduckhts package
+  # therefore contains host-native htslib objects, which wasm-ld must not see.
+  # Keep the validated provider receipt, but expose no incompatible flags.
+  c("", "", "unavailable-wasm")
+} else {
+  c(config$cppflags, config$ldflags, config$link)
+}
+
 writeLines(
   c(
-    make_escape(config$cppflags),
-    make_escape(config$ldflags),
+    make_escape(link_values[[1L]]),
+    make_escape(link_values[[2L]]),
     config$htslib_version,
     config$source_id,
     config$build_id,
-    config$link
+    link_values[[3L]]
   ),
   args[[1L]],
   useBytes = TRUE

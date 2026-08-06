@@ -45,3 +45,5 @@ small and source-compatible with that exact commit. When bumping upstream:
   use typed byte-pointer arithmetic in `read_huge()`, and remove a stray
   file-scope semicolon so package and Rtools builds remain clean under strict
   warnings.
+- `0010-make-kom-roundup-width-safe.patch`: make `kom_roundup64()` avoid a
+  32-bit shift-width diagnostic when its argument is `size_t` on wasm32.
