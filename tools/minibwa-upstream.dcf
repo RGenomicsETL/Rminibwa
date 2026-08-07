@@ -1,11 +1,11 @@
 Component: minibwa
-Version: 0.6-r416
+Version: 0.7-r421
 Repository: https://github.com/lh3/minibwa
 GitRepository: https://github.com/lh3/minibwa.git
-Commit: ebc59eaff045898c6a9daed4689302547d1326cb
-Date: 2026-07-30
-ArchiveURL: https://github.com/lh3/minibwa/archive/ebc59eaff045898c6a9daed4689302547d1326cb.tar.gz
-ArchiveSHA256: f84b42299923ccfcab19f46bfdb7fdb4562d87c95cb0fc591823458474870474
+Commit: d6d9f87d300908622306382cbe17d5ffd2879d2f
+Date: 2026-08-06
+ArchiveURL: https://github.com/lh3/minibwa/archive/d6d9f87d300908622306382cbe17d5ffd2879d2f.tar.gz
+ArchiveSHA256: fbc5c16ceb0bac88604fca85e7fb3c0c0cbe0df43f3b5ab7c279d4cf887ebcf3
 PatchDirectory: tools/patches/minibwa
 PatchPolicy: apply patches in lexical order after unpacking or checkout
 License: Rminibwa is GPL (>= 2). Upstream minibwa is MIT with bundled third-party notices in LICENSE.txt.

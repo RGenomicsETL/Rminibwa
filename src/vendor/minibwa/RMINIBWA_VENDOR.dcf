@@ -1,14 +1,14 @@
 Component: minibwa
-Version: 0.6-r416
+Version: 0.7-r421
 Repository: https://github.com/lh3/minibwa
 GitRepository: https://github.com/lh3/minibwa.git
-Commit: ebc59eaff045898c6a9daed4689302547d1326cb
-Date: 2026-07-30
-ArchiveURL: https://github.com/lh3/minibwa/archive/ebc59eaff045898c6a9daed4689302547d1326cb.tar.gz
-ArchiveSHA256: f84b42299923ccfcab19f46bfdb7fdb4562d87c95cb0fc591823458474870474
+Commit: d6d9f87d300908622306382cbe17d5ffd2879d2f
+Date: 2026-08-06
+ArchiveURL: https://github.com/lh3/minibwa/archive/d6d9f87d300908622306382cbe17d5ffd2879d2f.tar.gz
+ArchiveSHA256: fbc5c16ceb0bac88604fca85e7fb3c0c0cbe0df43f3b5ab7c279d4cf887ebcf3
 VendoredSource: src/vendor/minibwa
 PatchDirectory: tools/patches/minibwa
 Patches: 0001-ksw-use-simde-include-layer.patch, 0002-fix-checked-reads-and-subbatch-memset.patch, 0003-add-avx2-wide-extd2-kernel.patch, 0004-fix-mingw-kalloc-size-t-format.patch, 0005-fix-mingw-kthread-worker-return-warning.patch, 0006-make-kseq-roundup-width-safe.patch, 0007-add-strict-single-record-fastx-reader.patch, 0008-add-windows-file-mapping.patch, 0009-fix-strict-c-diagnostics.patch, 0010-make-kom-roundup-width-safe.patch
 VendoredScope: top-level minibwa C sources and headers; repository metadata, test data, manuscript assets, examples, and mimalloc omitted
-VendoredAtUTC: 2026-08-06T05:51:20Z
+VendoredAtUTC: 2026-08-07T18:23:33Z
 License: Rminibwa is GPL (>= 2). Upstream minibwa is MIT with bundled third-party notices in LICENSE.txt.
