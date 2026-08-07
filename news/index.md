@@ -1,5 +1,14 @@
 # Changelog
 
+## Rminibwa 0.7.0-0.0.1.9000
+
+- Update vendored `minibwa` to the exact upstream v0.7 release commit
+  `d6d9f87d300908622306382cbe17d5ffd2879d2f` (`MB_VERSION` `0.7-r421`;
+  archive SHA256
+  `fbc5c16ceb0bac88604fca85e7fb3c0c0cbe0df43f3b5ab7c279d4cf887ebcf3`).
+  This corrects properly-paired flags, unmapped-mate `RNEXT`,
+  `--chain-only` handling, and command-line option error locations.
+
 ## Rminibwa 0.6.0-0.0.1.9000
 
 - Make `Rduckhts` the required htslib provider. Configure now validates

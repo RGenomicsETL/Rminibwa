@@ -20,9 +20,9 @@ A named list with fields such as `Component`, `Version`, `Repository`,
 ``` r
 minibwa_upstream_info()[c("Version", "Commit")]
 #> $Version
-#> [1] "0.6-r416"
+#> [1] "0.7-r421"
 #> 
 #> $Commit
-#> [1] "ebc59eaff045898c6a9daed4689302547d1326cb"
+#> [1] "d6d9f87d300908622306382cbe17d5ffd2879d2f"
 #> 
 ```
