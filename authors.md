@@ -19,7 +19,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/RGenomicsETL/Rminibwa/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/RGenomicsETL/Rminibwa/blob/v0.7.0-0.0.1/DESCRIPTION)
 
 Toure S (2026). *Rminibwa: Native R Bindings and SIMD Dispatch for
 'minibwa'*. R package version 0.7.0-0.0.1,
