@@ -38,6 +38,6 @@ rminibwa_htslib_info()
 #> <rminibwa_htslib_info>
 #>   provider: Rduckhts
 #>   version:  1.24
-#>   build:    Rduckhts-1.5.1.9000-0.1.5-linux_amd64
+#>   build:    Rduckhts-1.5.2.9012.0.1.5-linux_amd64
 #>   link:     shared
 ```
