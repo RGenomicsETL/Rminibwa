@@ -97,7 +97,7 @@ void mb_pestat(void *km, const mb_opt_t *opt, int32_t n_frag, const int32_t *seg
 	for (d = 0; d < 4; ++d) {
 		mb_pestat_t *r = &pes[d];
 		q = &is[d];
-		int p25, p50, p75, x;
+		int p25, p50, p75, x, n_out_lo, n_out_hi;
 		if (q->n < MIN_DIR_CNT || q->n < max * MIN_DIR_RATIO) {
 			r->failed = 1;
 			kfree(km, q->a);
@@ -126,8 +126,13 @@ void mb_pestat(void *km, const mb_opt_t *opt, int32_t n_frag, const int32_t *seg
 		if (r->lo  > r->avg - MAX_STDDEV * r->std) r->lo  = (int)(r->avg - MAX_STDDEV * r->std + .499);
 		if (r->hi < r->avg + MAX_STDDEV * r->std) r->hi = (int)(r->avg + MAX_STDDEV * r->std + .499);
 		if (r->lo < 1) r->lo = 1;
+		for (i = n_out_lo = n_out_hi = 0; i < q->n; ++i) {
+			if (q->a[i] < r->lo) ++n_out_lo;
+			else if (q->a[i] > r->hi) ++n_out_hi;
+		}
 		if (kom_verbose >= 3)
-			fprintf(stderr, "[M::%s::%c%c] low and high boundaries for proper pairs: (%d, %d)\n", __func__, "FR"[d>>1&1], "FR"[d&1], r->lo, r->hi);
+			fprintf(stderr, "[M::%s::%c%c] low and high boundaries for proper pairs: (%d, %d); %.2f/%.2f%% pairs are below/above the boundaries\n",
+				__func__, "FR"[d>>1&1], "FR"[d&1], r->lo, r->hi, 100.0 * n_out_lo / q->n, 100.0 * n_out_hi / q->n);
 		kfree(km, q->a);
 	}
 }

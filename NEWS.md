@@ -1,11 +1,13 @@
-# Rminibwa 0.7.0-0.0.1.9000
+# Rminibwa 0.7.0-0.0.1
 
-- Update vendored `minibwa` to the exact upstream v0.7 release commit
-  `d6d9f87d300908622306382cbe17d5ffd2879d2f` (`MB_VERSION` `0.7-r421`;
-  archive SHA256
-  `fbc5c16ceb0bac88604fca85e7fb3c0c0cbe0df43f3b5ab7c279d4cf887ebcf3`).
-  This corrects properly-paired flags, unmapped-mate `RNEXT`, `--chain-only`
-  handling, and command-line option error locations.
+- Update vendored `minibwa` to exact upstream commit
+  `74bdd485f2517fdd322faa1fd8eb36ecf297743d` (`MB_VERSION`
+  `0.7-r427-dirty`; archive SHA256
+  `292130071f72e2bcd8b792b888be6063986b8867176530027927602de6e8a6bf`).
+  This corrects mismatch counting when choosing gapped alignment, including
+  the homopolymer-indel case in upstream issue #75. It also includes v0.7 and
+  post-v0.7 fixes for paired-end metadata, option handling, short-read preset
+  selection, CLI error status, paired-end diagnostics, and BWT prefetching.
 
 # Rminibwa 0.6.0-0.0.1.9000
 

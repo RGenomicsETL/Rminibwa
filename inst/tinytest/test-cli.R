@@ -1,6 +1,6 @@
 expect_true(file.exists(minibwa_path()))
 expect_true(minibwa_available())
-expect_equal(minibwa_version(), "0.7-r421")
+expect_equal(minibwa_version(), "0.7-r427-dirty")
 expect_false(minibwa_available(path = "definitely-not-a-minibwa-binary"))
 expect_equal(minibwa_path("definitely-not-a-minibwa-binary", must_work = FALSE), NA_character_)
 expect_error(
@@ -35,6 +35,34 @@ local({
 
   expect_true(length(ordinary) > 0L)
   expect_equal(mapped, ordinary)
+})
+
+local({
+  tmp <- tempfile("rminibwa-gapped-alignment-")
+  dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE, force = TRUE), add = TRUE)
+
+  reference_sequence <- paste0(
+    "GAAGTGTCAGAGGAGGAGATGAAATATTTCTACTTTGTGACAAAGTTCAGAAAGGTATTTATTTATTTCATTGAATTTAGAATAAATTTT",
+    "AGATTAATAGATGCAGTTACTTTGTTTTCCCATTTTTTTTTTTTTGGTTT"
+  )
+  read_sequence <- paste0(
+    "GAAGTGTCAGAGGAGGAGATGAAATATTTCTACTTTGTGACAAAGTTCAGAAAGGTATTTATTTATTTCATTGAATTTAGAATAAATTTT",
+    "AGATTAATAGATGCAGTTACTTTGTTTTCCCATTTTTTTTTTTTTTGGTT"
+  )
+  reference <- file.path(tmp, "reference.fa")
+  reads <- file.path(tmp, "reads.fastq")
+  prefix <- file.path(tmp, "reference")
+  writeLines(c(">chr2", reference_sequence), reference, useBytes = TRUE)
+  writeLines(c("@read", read_sequence, "+", strrep("I", nchar(read_sequence))), reads, useBytes = TRUE)
+
+  minibwa_index(reference, prefix = prefix)
+  output <- minibwa_map(prefix, reads)
+  records <- output[!startsWith(output, "@")]
+  expect_equal(length(records), 1L)
+  fields <- strsplit(records, "\t", fixed = TRUE)[[1L]]
+  expect_equal(fields[[6L]], "122M1I17M")
+  expect_true("NM:i:1" %in% fields)
 })
 
 local({

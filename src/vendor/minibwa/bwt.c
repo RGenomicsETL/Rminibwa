@@ -404,6 +404,8 @@ void mb_bwt_smem_batch(void *km, const mb_bwt_t *bwt, int32_t n, mb_smem_entry_t
 				s->i += bwt->pre_len;
 				mb_bwt_set_intv(bwt, s->q[s->i--], &s->p);
 			}
+			mb_bwt_block_prefetch(bwt, s->p.x[0]);
+			mb_bwt_block_prefetch(bwt, s->p.x[0] + s->p.size);
 			s->stage++;
 		} else if (s->stage == 3) { // first backward pass; require ->{i,p}
 			if (s->i < s->x) { // move to the next stage

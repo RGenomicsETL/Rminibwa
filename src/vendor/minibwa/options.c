@@ -58,7 +58,6 @@ int mb_opt_preset(mb_opt_t *opt, const char *preset)
 		opt->flag |= MB_F_PE;
 		if (strcmp(preset, "adap") == 0) opt->flag |= MB_F_ADAP;
 		opt->min_dp_max = 30;
-		opt->flag |= MB_F_ADAP;
 		opt->bw = 100;
 		opt->max_gap = 100;
 		opt->zdrop = 80;
