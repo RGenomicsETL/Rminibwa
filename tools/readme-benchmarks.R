@@ -70,17 +70,12 @@ run_readme_benchmarks <- function() {
   cat("\n")
 
   py_path <- Sys.getenv("RMINIBWA_BENCH_PYTHONPATH")
-  rust_lib <- Sys.getenv("RMINIBWA_BENCH_RUST_LIB")
-  if (dir.exists(py_path) && file.exists(rust_lib)) {
+  if (dir.exists(py_path)) {
     py_run_string(sprintf("import sys; sys.path.insert(0, %s)", shQuote(py_path)))
     py_minibwa <- import("minibwa", convert = FALSE)
     py_idx <- py_minibwa$Index$load(bench_prefix)
     py_opt <- py_minibwa$Opts("sr")
     invisible(py_opt$set_out_n(0L))
-
-    dyn.load(rust_lib)
-    rust_loaded <- TRUE
-    invisible(.C("rminibwa_bench_rust_init_c", bench_prefix))
 
     compare_backend <- if ("avx2" %in% internal_backends) "avx2" else tail(internal_backends, 1L)
     simd_set_backend(compare_backend)
@@ -89,7 +84,6 @@ run_readme_benchmarks <- function() {
       rminibwa_count = Rminibwa:::mb_map_count(bench_query_raw, bench_idx, bench_opt, bench_name_raw),
       rminibwa_batch = mb_align_n(mb_map(bench_query_raw, bench_idx, bench_opt, bench_name_raw)),
       python_pyo3 = length(py_minibwa$map(py_idx, py_opt, "read1", bench_query, "none")),
-      rust_cdylib = .C("rminibwa_bench_rust_map_count_c", bench_query, out = integer(1L))$out,
       iterations = 100,
       check = FALSE,
       time_unit = "us"
@@ -101,10 +95,6 @@ run_readme_benchmarks <- function() {
       format = "pipe"
     ))
     cat("\n")
-
-    invisible(.C("rminibwa_bench_rust_clear_c"))
-    dyn.unload(rust_lib)
-    rust_loaded <- FALSE
   }
 }
 

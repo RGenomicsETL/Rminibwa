@@ -12,9 +12,6 @@ files <- character()
 files <- c(files, Sys.glob(file.path(root, "src", "rmb-ksw", "*.o")))
 files <- c(files, Sys.glob(file.path(root, "src", "Rminibwa.*")))
 
-rust <- Sys.getenv("RMINIBWA_BENCH_RUST_LIB", unset = "")
-if (nzchar(rust) && file.exists(rust)) files <- c(files, rust)
-
 py <- Sys.getenv("RMINIBWA_BENCH_PYTHONPATH", unset = "")
 if (nzchar(py) && dir.exists(py)) {
   files <- c(files, Sys.glob(file.path(py, "minibwa", "_minibwa*.so")))
