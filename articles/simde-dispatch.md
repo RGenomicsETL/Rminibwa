@@ -84,8 +84,8 @@ ALTREP column accessors remain valid. The README `make rdm` path
 additionally benchmarks:
 
 1.  internal Rminibwa-only `scalar` vs `sse4` vs `avx2`; and
-2.  Rminibwa AVX2 vs locally built Python/Rust bindings compiled with
-    native AVX2 codegen.
+2.  Rminibwa AVX2 vs a locally built Python binding compiled with native
+    AVX2 codegen.
 
 Backend timing must use a workload that actually reaches KSW. Very short
 exact matches can be resolved by seeding/chaining and ungapped fast

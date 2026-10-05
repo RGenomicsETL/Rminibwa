@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rminibwa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0-0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0-0.0.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,11 +36,11 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/RGenomicsETL/Rminibwa/blob/v0.7.0-0.0.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/RGenomicsETL/Rminibwa/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.7.0-0.0.1" id="rminibwa-070-001">Rminibwa 0.7.0-0.0.1<a class="anchor" aria-label="anchor" href="#rminibwa-070-001"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.7.0-0.0.1.9000" id="rminibwa-070-0019000">Rminibwa 0.7.0-0.0.1.9000<a class="anchor" aria-label="anchor" href="#rminibwa-070-0019000"></a></h2>
 <ul><li>Update vendored <code>minibwa</code> to exact upstream commit <code>74bdd485f2517fdd322faa1fd8eb36ecf297743d</code> (<code>MB_VERSION</code> <code>0.7-r427-dirty</code>; archive SHA256 <code>292130071f72e2bcd8b792b888be6063986b8867176530027927602de6e8a6bf</code>). This corrects mismatch counting when choosing gapped alignment, including the homopolymer-indel case in upstream issue <a href="https://github.com/RGenomicsETL/Rminibwa/issues/75" class="external-link">#75</a>. It also includes v0.7 and post-v0.7 fixes for paired-end metadata, option handling, short-read preset selection, CLI error status, paired-end diagnostics, and BWT prefetching.</li>
 </ul></div>
     <div class="section level2">
@@ -73,7 +73,7 @@
 <li>Vendor minibwa at commit <code>f0fd108456d459e5da3755f29c8700dc7f6fe0df</code> with a patch queue and provenance metadata.</li>
 <li>Add Rtinycc inline downstream-C examples in the README, vignette, and tests.</li>
 <li>Build and install a package-provided <code>minibwa</code> executable from vendored sources; CLI wrappers now use it by default.</li>
-<li>Add developer-only benchmarks comparing internal staged backends and optional external Python/Rust bindings from an explicit local checkout.</li>
+<li>Add developer-only benchmarks comparing internal staged backends and an optional external Python binding from an explicit local checkout.</li>
 <li>Add <code>make asm</code> / <code>tools/check-assembly.R</code> to audit generated SIMD instruction families in staged objects and shared libraries.</li>
 <li>Add pkgdown configuration and GitHub Actions workflows for standard R CMD check, Fedora/R-devel CRAN-style check, and GitHub Pages deployment.</li>
 </ul></div>

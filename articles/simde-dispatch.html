@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rminibwa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0-0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0-0.0.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@
       <h1>SIMDe Dispatch Design</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/RGenomicsETL/Rminibwa/blob/v0.7.0-0.0.1/vignettes/simde-dispatch.Rmd" class="external-link"><code>vignettes/simde-dispatch.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/RGenomicsETL/Rminibwa/blob/main/vignettes/simde-dispatch.Rmd" class="external-link"><code>vignettes/simde-dispatch.Rmd</code></a></small>
       <div class="d-none name"><code>simde-dispatch.Rmd</code></div>
     </div>
 
@@ -162,8 +162,8 @@ batch and ALTREP column accessors remain valid. The README
 <ol style="list-style-type: decimal">
 <li>internal Rminibwa-only <code>scalar</code> vs <code>sse4</code> vs
 <code>avx2</code>; and</li>
-<li>Rminibwa AVX2 vs locally built Python/Rust bindings compiled with
-native AVX2 codegen.</li>
+<li>Rminibwa AVX2 vs a locally built Python binding compiled with native
+AVX2 codegen.</li>
 </ol>
 <p>Backend timing must use a workload that actually reaches KSW. Very
 short exact matches can be resolved by seeding/chaining and ungapped

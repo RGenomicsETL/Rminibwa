@@ -1,6 +1,6 @@
 # Changelog
 
-## Rminibwa 0.7.0-0.0.1
+## Rminibwa 0.7.0-0.0.1.9000
 
 - Update vendored `minibwa` to exact upstream commit
   `74bdd485f2517fdd322faa1fd8eb36ecf297743d` (`MB_VERSION`
@@ -94,8 +94,7 @@
 - Build and install a package-provided `minibwa` executable from
   vendored sources; CLI wrappers now use it by default.
 - Add developer-only benchmarks comparing internal staged backends and
-  optional external Python/Rust bindings from an explicit local
-  checkout.
+  an optional external Python binding from an explicit local checkout.
 - Add `make asm` / `tools/check-assembly.R` to audit generated SIMD
   instruction families in staged objects and shared libraries.
 - Add pkgdown configuration and GitHub Actions workflows for standard R
