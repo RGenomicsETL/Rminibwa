@@ -1,5 +1,9 @@
 # Rminibwa 0.7.0-0.0.1.9000
 
+- `mb_index_load()` now memory-maps the index read-only and shared, as
+  `minibwa map --mmap` does, instead of reading a private heap copy. Processes
+  that load the same index share one page-cache copy, and loading a cached
+  index no longer copies it.
 - Update vendored `minibwa` to exact upstream commit
   `74bdd485f2517fdd322faa1fd8eb36ecf297743d` (`MB_VERSION`
   `0.7-r427-dirty`; archive SHA256
