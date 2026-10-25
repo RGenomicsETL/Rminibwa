@@ -41,7 +41,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0-0.0.1.9000" id="rminibwa-070-0019000">Rminibwa 0.7.0-0.0.1.9000<a class="anchor" aria-label="anchor" href="#rminibwa-070-0019000"></a></h2>
-<ul><li>Update vendored <code>minibwa</code> to exact upstream commit <code>74bdd485f2517fdd322faa1fd8eb36ecf297743d</code> (<code>MB_VERSION</code> <code>0.7-r427-dirty</code>; archive SHA256 <code>292130071f72e2bcd8b792b888be6063986b8867176530027927602de6e8a6bf</code>). This corrects mismatch counting when choosing gapped alignment, including the homopolymer-indel case in upstream issue <a href="https://github.com/RGenomicsETL/Rminibwa/issues/75" class="external-link">#75</a>. It also includes v0.7 and post-v0.7 fixes for paired-end metadata, option handling, short-read preset selection, CLI error status, paired-end diagnostics, and BWT prefetching.</li>
+<ul><li>
+<code><a href="../reference/mb_index_load.html">mb_index_load()</a></code> now memory-maps the index read-only and shared, as <code>minibwa map --mmap</code> does, instead of reading a private heap copy. Processes that load the same index share one page-cache copy, and loading a cached index no longer copies it.</li>
+<li>Update vendored <code>minibwa</code> to exact upstream commit <code>74bdd485f2517fdd322faa1fd8eb36ecf297743d</code> (<code>MB_VERSION</code> <code>0.7-r427-dirty</code>; archive SHA256 <code>292130071f72e2bcd8b792b888be6063986b8867176530027927602de6e8a6bf</code>). This corrects mismatch counting when choosing gapped alignment, including the homopolymer-indel case in upstream issue <a href="https://github.com/RGenomicsETL/Rminibwa/issues/75" class="external-link">#75</a>. It also includes v0.7 and post-v0.7 fixes for paired-end metadata, option handling, short-read preset selection, CLI error status, paired-end diagnostics, and BWT prefetching.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0-0.0.1.9000" id="rminibwa-060-0019000">Rminibwa 0.6.0-0.0.1.9000<a class="anchor" aria-label="anchor" href="#rminibwa-060-0019000"></a></h2>
