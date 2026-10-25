@@ -13,6 +13,13 @@ local({
   contigs <- mb_index_contigs(idx)
   expect_equal(rawToChar(contigs$name[[1]]), "chr1")
   expect_equal(contigs$length[[1]], 4000)
+  if (file.exists("/proc/self/maps")) {
+    # The loaded index is a shared mapping of the files, not a heap copy.
+    maps <- readLines("/proc/self/maps")
+    for (suffix in c(".l2b", ".mbw")) {
+      expect_true(any(endsWith(maps, normalizePath(paste0(prefix, suffix)))))
+    }
+  }
 
   info <- simd_info()
   expect_true(inherits(info, "rminibwa_simd_info"))

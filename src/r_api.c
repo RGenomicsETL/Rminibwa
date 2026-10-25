@@ -441,7 +441,10 @@ void rminibwa_apply_options(SEXP opts_x, mb_opt_t *opt) {
 SEXP RC_mb_index_load(SEXP prefix_x, SEXP meth_x) {
     const char *prefix = chr_scalar(prefix_x, "prefix");
     int meth = is_true_scalar(meth_x);
-    mb_idx_t *ptr = mb_idx_load(prefix, meth);
+    /* Map the .l2b and .mbw files read-only and shared, with MAP_POPULATE, as
+     * `minibwa map --mmap` does: processes that load the same index share one
+     * page-cache copy instead of each reading a private heap copy. */
+    mb_idx_t *ptr = mb_idx_load_mmap(prefix, meth, 1);
     if (ptr == NULL) Rf_error("failed to load minibwa index at prefix: %s", prefix);
     RmbIndex *idx = R_Calloc(1, RmbIndex);
     idx->ptr = ptr;

@@ -32,6 +32,11 @@ mb_index_build <- function(fasta, prefix, meth = FALSE, threads = 1L, low_memory
 
 #' Load a native minibwa index
 #'
+#' The index files are memory-mapped read-only and shared, as with
+#' `minibwa map --mmap`, so processes that load the same index share one
+#' page-cache copy. The `.l2b` and `.mbw` files must stay unchanged while a
+#' handle is alive.
+#'
 #' @param prefix Index prefix.
 #' @param meth Load the methylation BWT index.
 #' @return An external pointer handle to a native minibwa index.

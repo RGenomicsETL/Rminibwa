@@ -15,5 +15,8 @@ mb_index_load(prefix, meth = FALSE)
 An external pointer handle to a native minibwa index.
 }
 \description{
-Load a native minibwa index
+The index files are memory-mapped read-only and shared, as with
+\verb{minibwa map --mmap}, so processes that load the same index share one
+page-cache copy. The \code{.l2b} and \code{.mbw} files must stay unchanged while a
+handle is alive.
 }
